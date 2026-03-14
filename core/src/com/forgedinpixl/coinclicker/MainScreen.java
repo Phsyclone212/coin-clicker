@@ -1,17 +1,14 @@
 package com.forgedinpixl.coinclicker;
 
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class MainScreen implements Screen {
-
-    CoinClicker game;
+public class MainScreen extends BaseScreen {
 
     public MainScreen(CoinClicker game){
-        this.game = game;
+        super(game);
     }
 
-    @Override
     public void show() {
 
     }
@@ -19,13 +16,42 @@ public class MainScreen implements Screen {
     @Override
     public void render(float delta){
 
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+
+        float x = 100;
+        float y = screenHeight-80;
+        float lineSpacing = 50;
+
         ScreenUtils.clear(0, 0, 0, 1);
 
-        game.batch.begin();
+        handleInput();
 
-        game.font.draw(game.batch, "Coin Clicker", 100, 200);
+        batch.begin();
 
-        game.batch.end();
+        font.draw(batch, "Coin Clicker", screenWidth/2, y);
+        font.draw(batch, "Stats", screenWidth/2, 120);
+
+        batch.end();
+    }
+
+    public void handleInput() {
+        if (Gdx.input.justTouched()) {
+            float touchX = Gdx.input.getX();
+            float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+            float statsX = Gdx.graphics.getWidth() /2f;
+            float statsY = 120;
+
+            float left = statsX - 40;
+            float right = statsX + 80;
+            float bottom = statsY - 30;
+            float top = statsY +20;
+
+            if(touchX >= left && touchX <= right && touchY >= bottom && touchY <= top){
+                game.setScreen(new StatsScreen(game));
+            }
+        }
     }
 
     @Override
