@@ -9,61 +9,54 @@ public class StatsTracker {
     private int currentStreak = 0;
     private int longestStreak = 0;
     private int recentHistory = 0;
-    private double headsPercentage = 0;
+    private double headsPercentage;
+
+    public void recordFlip(boolean wasHeads){
+        // update counts respectively
+        totalFlips++;
+
+        if(wasHeads){
+            headsCount++;
+        } else {
+            tailsCount++;
+        }
+    }
 
     public int getTotalFlips() {
         return totalFlips;
-    }
-
-    public void setTotalFlips(int totalFlips) {
-        this.totalFlips = totalFlips;
     }
 
     public int getHeadsCount() {
         return headsCount;
     }
 
-    public void setHeadsCount(int headsCount) {
-        this.headsCount = headsCount;
-    }
-
     public int getTailsCount() {
         return tailsCount;
-    }
-
-    public void setTailsCount(int tailsCount) {
-        this.tailsCount = tailsCount;
     }
 
     public int getCurrentStreak() {
         return currentStreak;
     }
 
-    public void setCurrentStreak(int currentStreak) {
-        this.currentStreak = currentStreak;
-    }
-
     public int getLongestStreak() {
         return longestStreak;
-    }
-
-    public void setLongestStreak(int longestStreak) {
-        this.longestStreak = longestStreak;
     }
 
     public int getRecentHistory() {
         return recentHistory;
     }
 
-    public void setRecentHistory(int recentHistory) {
-        this.recentHistory = recentHistory;
-    }
-
     public double getHeadsPercentage() {
-        return headsPercentage;
+        if (totalFlips == 0){
+            return 0;
+        }
+        return (double) headsCount / totalFlips * 100;
     }
 
-    public void setHeadsPercentage(double headsPercentage) {
-        this.headsPercentage = headsPercentage;
+    public double getTailsPercentage() {
+        if (totalFlips == 0){
+            return 0;
+        }
+        return (double) tailsCount / totalFlips * 100;
     }
 }

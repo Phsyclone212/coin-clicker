@@ -10,12 +10,14 @@ public abstract class BaseScreen implements Screen {
     protected SpriteBatch batch;
     protected BitmapFont font;
     protected StatsTracker statsTracker;
+    protected CoinController coinController;
 
     public BaseScreen(CoinClicker game){
         this.game = game;
-        this.batch = new SpriteBatch();
-        this.font = new BitmapFont();
-        this.statsTracker = new StatsTracker();
+        this.batch = game.batch;
+        this.font = game.font;
+        this.statsTracker = game.statsTracker;
+        this.coinController = game.coinController;
     }
 
 

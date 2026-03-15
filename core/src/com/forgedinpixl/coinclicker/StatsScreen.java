@@ -33,7 +33,7 @@ public class StatsScreen extends BaseScreen {
         batch.end();
     }
 
-    public void handleInput() {
+    private void handleInput() {
         if (Gdx.input.justTouched()) {
             float touchX = Gdx.input.getX();
             float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();

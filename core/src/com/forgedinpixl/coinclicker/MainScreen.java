@@ -20,8 +20,10 @@ public class MainScreen extends BaseScreen {
         float screenHeight = Gdx.graphics.getHeight();
 
         float x = 100;
-        float y = screenHeight-80;
-        float lineSpacing = 50;
+        float titleY = screenHeight * 0.85f;
+        float coinY = screenHeight * 0.55f;
+        float subtextY = screenHeight * 0.42f;
+        float statsY = screenHeight * 0.15f;
 
         ScreenUtils.clear(0, 0, 0, 1);
 
@@ -29,24 +31,26 @@ public class MainScreen extends BaseScreen {
 
         batch.begin();
 
-        font.draw(batch, "Coin Clicker", screenWidth/2, y);
-        font.draw(batch, "Stats", screenWidth/2, 120);
+        font.draw(batch, "Coin Clicker", screenWidth/2, titleY);
+        //draw coin
+        //draw subtext
+        font.draw(batch, "Stats", screenWidth/2, statsY);
 
         batch.end();
     }
 
-    public void handleInput() {
+    private void handleInput() {
         if (Gdx.input.justTouched()) {
             float touchX = Gdx.input.getX();
             float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
 
             float statsX = Gdx.graphics.getWidth() /2f;
-            float statsY = 120;
+            float statsY = Gdx.graphics.getHeight() * 0.15f;
 
-            float left = statsX - 40;
-            float right = statsX + 80;
-            float bottom = statsY - 30;
-            float top = statsY +20;
+            float left = statsX - 100;
+            float right = statsX + 100;
+            float bottom = statsY - 40;
+            float top = statsY + 40;
 
             if(touchX >= left && touchX <= right && touchY >= bottom && touchY <= top){
                 game.setScreen(new StatsScreen(game));

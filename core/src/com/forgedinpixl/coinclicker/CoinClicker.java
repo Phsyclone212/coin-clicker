@@ -6,16 +6,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class CoinClicker extends Game {
 
-	SpriteBatch batch;
-	BitmapFont font;
-	StatsTracker statsTracker;
-	AssetStore assetStore;
+	public SpriteBatch batch;
+	public BitmapFont font;
+	public StatsTracker statsTracker;
+	public CoinController coinController;
+	public AssetStore assetStore;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
+		font.getData().setScale(4f);
 		statsTracker = new StatsTracker();
+		coinController = new CoinController(statsTracker);
 
 		setScreen(new MainScreen(this));
 	}
