@@ -9,7 +9,6 @@ public class StatsTracker {
     private int currentStreak = 0;
     private int longestStreak = 0;
     private int recentHistory = 0;
-    private double headsPercentage;
 
     public void recordFlip(boolean wasHeads){
         // update counts respectively

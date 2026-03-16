@@ -1,6 +1,7 @@
 package com.forgedinpixl.coinclicker;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainScreen extends BaseScreen {
@@ -15,10 +16,21 @@ public class MainScreen extends BaseScreen {
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
 
+        //anchors
         float titleY = screenHeight * 0.85f;
         float coinY = screenHeight * 0.55f;
         float subtextY = screenHeight * 0.42f;
         float statsY = screenHeight * 0.15f;
+
+        String titleText = "Coin Clicker";
+        String coinText = "( COIN )";
+        String resultText = coinController.getCurrentResultText();
+        String statsText = "Stats";
+
+        GlyphLayout titleLayout = new GlyphLayout(font, titleText);
+        GlyphLayout coinLayout = new GlyphLayout(font, coinText);
+        GlyphLayout resultLayout = new GlyphLayout(font, resultText);
+        GlyphLayout statsLayout = new GlyphLayout(font, statsText);
 
         ScreenUtils.clear(0, 0, 0, 1);
 
@@ -28,15 +40,12 @@ public class MainScreen extends BaseScreen {
 
         batch.begin();
 
-        font.draw(batch, "Coin Clicker", screenWidth/2, titleY);
-
+        font.draw(batch, titleText, screenWidth / 2f - titleLayout.width / 2f, titleY);
         //draw coin
-        font.draw(batch, " ( COIN ) ", screenWidth/2, coinY);
-
+        font.draw(batch, coinText, screenWidth / 2f - coinLayout.width / 2f, coinY);
         //draw subtext
-        font.draw(batch, coinController.getCurrentResultText(), screenWidth/2, subtextY); // getResult default text is "Tap coin to flip" so it starting this way works.
-
-        font.draw(batch, "Stats", screenWidth/2, statsY);
+        font.draw(batch, resultText, screenWidth / 2f - resultLayout.width / 2f, subtextY); // getResult default text is "Tap coin to flip" so it starting this way works.
+        font.draw(batch, statsText, screenWidth / 2f - statsLayout.width / 2f, statsY);
 
         batch.end();
     }
@@ -44,33 +53,42 @@ public class MainScreen extends BaseScreen {
     private void handleInput(float screenWidth, float screenHeight, float coinY, float statsY) {
         if (Gdx.input.justTouched()) {
 
-
             // Where did we just get tapped?
             float touchX = Gdx.input.getX();
             float touchY = screenHeight - Gdx.input.getY();
 
+            float paddingX = 30f;
+            float paddingY = 30f;
+
+            String coinText = "( COIN )";
+            GlyphLayout coinLayout = new GlyphLayout(font, coinText);
+
             // determine coin location
-            float coinX = screenWidth/2f;
+            float coinX = screenWidth/2f - coinLayout.width / 2f;
 
-            // hitbox for coin location (large, so using methods, should simplify variables)
-            float coinLeft = coinX - screenWidth*0.4f;
-            float coinRight = coinX + screenWidth*0.4f;
-            float coinBottom = coinY - screenHeight*0.2f;
-            float coinTop = coinY + screenHeight*0.2f;
+            // hitbox for coin
+            float coinLeft = coinX - paddingX;
+            float coinRight = coinX + coinLayout.width + paddingX;
+            float coinBottom = coinY - coinLayout.height - paddingY;
+            float coinTop = coinY + paddingY;
 
+            // stats button
+            String statsText = "Stats";
+            GlyphLayout statsLayout = new GlyphLayout(font, statsText);
+
+            float statsX = screenWidth / 2f - statsLayout.width / 2f;
+
+            // Creating hitbox for stats button
+            float left = statsX - paddingX;
+            float right = statsX + statsLayout.width + paddingX;
+            float bottom = statsY - statsLayout.height - paddingY;
+            float top = statsY + paddingY;
+
+            // did the coin get tapped?
             if(touchX >= coinLeft && touchX <= coinRight && touchY >= coinBottom && touchY <= coinTop){
                 //flip a coin
                 coinController.requestFlip();
             }
-
-            // determining stats button location
-            float statsX = screenWidth /2f;
-
-            // Creating hitbox for stats button
-            float left = statsX - 100;
-            float right = statsX + 100;
-            float bottom = statsY - 40;
-            float top = statsY + 40;
 
             // did stats get tapped?
             if(touchX >= left && touchX <= right && touchY >= bottom && touchY <= top){
