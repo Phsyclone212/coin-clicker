@@ -29,9 +29,9 @@ public class StatsScreen extends BaseScreen {
         String backText = "Back to Main";
 
         GlyphLayout titleLayout = new GlyphLayout(titleFont, titleText);
-        GlyphLayout totalLayout = new GlyphLayout(bodyFont, totalText);
-        GlyphLayout headsLayout = new GlyphLayout(bodyFont, headsText);
-        GlyphLayout tailsLayout = new GlyphLayout(bodyFont, tailsText);
+        GlyphLayout totalLayout = new GlyphLayout(statsFont, totalText);
+        GlyphLayout headsLayout = new GlyphLayout(statsFont, headsText);
+        GlyphLayout tailsLayout = new GlyphLayout(statsFont, tailsText);
         GlyphLayout backLayout = new GlyphLayout(bodyFont, backText);
 
         ScreenUtils.clear(0,0,0,1);
@@ -41,9 +41,9 @@ public class StatsScreen extends BaseScreen {
         batch.begin();
 
         titleFont.draw(batch, titleText, screenWidth / 2f - titleLayout.width / 2f, titleY);
-        bodyFont.draw(batch, totalText, screenWidth / 2f - totalLayout.width / 2f, statsStartY);
-        bodyFont.draw(batch, headsText, screenWidth / 2f - headsLayout.width / 2f, statsStartY-lineSpacing);
-        bodyFont.draw(batch, tailsText, screenWidth / 2f - tailsLayout.width / 2f, statsStartY - lineSpacing*2);
+        statsFont.draw(batch, totalText, screenWidth / 2f - totalLayout.width / 2f, statsStartY);
+        statsFont.draw(batch, headsText, screenWidth / 2f - headsLayout.width / 2f, statsStartY-lineSpacing);
+        statsFont.draw(batch, tailsText, screenWidth / 2f - tailsLayout.width / 2f, statsStartY - lineSpacing*2);
         bodyFont.draw(batch, backText, screenWidth / 2f - backLayout.width / 2f, backY);
 
         batch.end();

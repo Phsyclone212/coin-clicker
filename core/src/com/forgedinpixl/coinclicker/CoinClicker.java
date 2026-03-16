@@ -15,6 +15,7 @@ public class CoinClicker extends Game {
 	public SpriteBatch batch;
 	public BitmapFont titleFont;
 	public BitmapFont bodyFont;
+	public BitmapFont statsFont;
 	public StatsTracker statsTracker;
 	public CoinController coinController;
 	public AssetStore assetStore;
@@ -31,8 +32,11 @@ public class CoinClicker extends Game {
 		bodyParam.size = 120;
 		FreeTypeFontParameter titleParam = new FreeTypeFontParameter();
 		titleParam.size = 180;
+		FreeTypeFontParameter statsParam = new FreeTypeFontParameter();
+		statsParam.size = 80;
 		bodyFont = generator.generateFont(bodyParam);
 		titleFont = generator.generateFont(titleParam);
+		statsFont = generator.generateFont(statsParam);
 		generator.dispose();
 
 		statsTracker = new StatsTracker();
@@ -59,6 +63,7 @@ public class CoinClicker extends Game {
 		batch.dispose();
 		titleFont.dispose();
 		bodyFont.dispose();
+		statsFont.dispose();
 	}
 
 	@Override

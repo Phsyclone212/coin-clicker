@@ -10,6 +10,7 @@ public abstract class BaseScreen implements Screen {
     protected SpriteBatch batch;
     protected BitmapFont titleFont;
     protected BitmapFont bodyFont;
+    protected BitmapFont statsFont;
     protected StatsTracker statsTracker;
     protected CoinController coinController;
 
@@ -18,6 +19,7 @@ public abstract class BaseScreen implements Screen {
         this.batch = game.batch;
         this.titleFont = game.titleFont;
         this.bodyFont = game.bodyFont;
+        this.statsFont = game.statsFont;
         this.statsTracker = game.statsTracker;
         this.coinController = game.coinController;
     }
