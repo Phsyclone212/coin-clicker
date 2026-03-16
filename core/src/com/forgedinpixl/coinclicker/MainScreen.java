@@ -32,8 +32,13 @@ public class MainScreen extends BaseScreen {
         batch.begin();
 
         font.draw(batch, "Coin Clicker", screenWidth/2, titleY);
+
         //draw coin
+        font.draw(batch, " ( COIN ) ", screenWidth/2, coinY);
+
         //draw subtext
+        font.draw(batch, getResult(), screenWidth*0.45f, subtextY); // getResult default text is "Tap coin to flip" so it starting this way works.
+
         font.draw(batch, "Stats", screenWidth/2, statsY);
 
         batch.end();
@@ -41,21 +46,44 @@ public class MainScreen extends BaseScreen {
 
     private void handleInput() {
         if (Gdx.input.justTouched()) {
+            // Where did we just get tapped?
             float touchX = Gdx.input.getX();
             float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
 
+            // determine coin location
+            float coinX = Gdx.graphics.getWidth()/2f;
+            float coinY = Gdx.graphics.getHeight()*0.55f;
+
+            // hitbox for coin location (large, so using methods, should simplify variables)
+            float coinLeft = coinX - Gdx.graphics.getWidth()*0.4f;
+            float coinRight = coinX + Gdx.graphics.getWidth()*0.4f;
+            float coinBottom = coinY - Gdx.graphics.getHeight()*0.2f;
+            float coinTop = coinY + Gdx.graphics.getHeight()*0.2f;
+
+            if(touchX >= coinLeft && touchX <= coinRight && touchY >= coinBottom && touchY <= coinTop){
+                //flip a coin
+                coinController.requestFlip();
+            }
+
+            // determining stats button location
             float statsX = Gdx.graphics.getWidth() /2f;
             float statsY = Gdx.graphics.getHeight() * 0.15f;
 
+            // Creating hitbox for stats button
             float left = statsX - 100;
             float right = statsX + 100;
             float bottom = statsY - 40;
             float top = statsY + 40;
 
+            // did stats get tapped?
             if(touchX >= left && touchX <= right && touchY >= bottom && touchY <= top){
                 game.setScreen(new StatsScreen(game));
             }
         }
+    }
+
+    public String getResult(){
+        return coinController.currentResultText;
     }
 
     @Override

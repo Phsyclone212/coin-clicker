@@ -16,7 +16,7 @@ public class CoinClicker extends Game {
 	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		font.getData().setScale(4f);
+		font.getData().setScale(3f);
 		statsTracker = new StatsTracker();
 		coinController = new CoinController(statsTracker);
 
