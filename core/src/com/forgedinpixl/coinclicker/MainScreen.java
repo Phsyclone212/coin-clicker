@@ -2,6 +2,7 @@ package com.forgedinpixl.coinclicker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainScreen extends BaseScreen {
@@ -13,8 +14,8 @@ public class MainScreen extends BaseScreen {
     @Override
     public void render(float delta){
 
-        float screenWidth = Gdx.graphics.getWidth();
-        float screenHeight = Gdx.graphics.getHeight();
+        float screenWidth = game.viewport.getWorldWidth();
+        float screenHeight = game.viewport.getWorldHeight();
 
         //anchors
         float titleY = screenHeight * 0.85f;
@@ -53,9 +54,11 @@ public class MainScreen extends BaseScreen {
     private void handleInput(float screenWidth, float screenHeight, float coinY, float statsY) {
         if (Gdx.input.justTouched()) {
 
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            game.viewport.unproject(touchPos);
             // Where did we just get tapped?
-            float touchX = Gdx.input.getX();
-            float touchY = screenHeight - Gdx.input.getY();
+            float touchX = touchPos.x;
+            float touchY = touchPos.y;
 
             float paddingX = 30f;
             float paddingY = 30f;
