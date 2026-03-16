@@ -8,7 +8,7 @@ public class StatsTracker {
     private int  tailsCount = 0;
     private int currentStreak = 0;
     private int longestStreak = 0;
-    private int recentHistory = 0;
+    private Boolean lastFlipWasHeads = null;
 
     public void recordFlip(boolean wasHeads){
         // update counts respectively
@@ -19,6 +19,21 @@ public class StatsTracker {
         } else {
             tailsCount++;
         }
+
+        //streak logic
+        if(lastFlipWasHeads == null){
+            currentStreak = 1;
+        } else if(lastFlipWasHeads == wasHeads){
+            currentStreak++;
+        } else {
+            currentStreak = 1;
+        }
+
+        if(currentStreak > longestStreak){
+            longestStreak = currentStreak;
+        }
+
+        lastFlipWasHeads = wasHeads;
     }
 
     public int getTotalFlips() {
@@ -41,10 +56,6 @@ public class StatsTracker {
         return longestStreak;
     }
 
-    public int getRecentHistory() {
-        return recentHistory;
-    }
-
     public double getHeadsPercentage() {
         if (totalFlips == 0){
             return 0;
@@ -57,5 +68,13 @@ public class StatsTracker {
             return 0;
         }
         return (double) tailsCount / totalFlips * 100;
+    }
+
+    public String getSide(){
+        if(lastFlipWasHeads){
+            return "Heads.";
+        } else {
+            return "Tails.";
+        }
     }
 }
