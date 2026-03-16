@@ -28,10 +28,10 @@ public class MainScreen extends BaseScreen {
         String resultText = coinController.getCurrentResultText();
         String statsText = "Stats";
 
-        GlyphLayout titleLayout = new GlyphLayout(font, titleText);
-        GlyphLayout coinLayout = new GlyphLayout(font, coinText);
-        GlyphLayout resultLayout = new GlyphLayout(font, resultText);
-        GlyphLayout statsLayout = new GlyphLayout(font, statsText);
+        GlyphLayout titleLayout = new GlyphLayout(titleFont, titleText);
+        GlyphLayout coinLayout = new GlyphLayout(bodyFont, coinText);
+        GlyphLayout resultLayout = new GlyphLayout(bodyFont, resultText);
+        GlyphLayout statsLayout = new GlyphLayout(bodyFont, statsText);
 
         ScreenUtils.clear(0, 0, 0, 1);
 
@@ -41,12 +41,12 @@ public class MainScreen extends BaseScreen {
 
         batch.begin();
 
-        font.draw(batch, titleText, screenWidth / 2f - titleLayout.width / 2f, titleY);
+        titleFont.draw(batch, titleText, screenWidth / 2f - titleLayout.width / 2f, titleY);
         //draw coin
-        font.draw(batch, coinText, screenWidth / 2f - coinLayout.width / 2f, coinY);
+        bodyFont.draw(batch, coinText, screenWidth / 2f - coinLayout.width / 2f, coinY);
         //draw subtext
-        font.draw(batch, resultText, screenWidth / 2f - resultLayout.width / 2f, subtextY); // getResult default text is "Tap coin to flip" so it starting this way works.
-        font.draw(batch, statsText, screenWidth / 2f - statsLayout.width / 2f, statsY);
+        bodyFont.draw(batch, resultText, screenWidth / 2f - resultLayout.width / 2f, subtextY); // getResult default text is "Tap coin to flip" so it starting this way works.
+        bodyFont.draw(batch, statsText, screenWidth / 2f - statsLayout.width / 2f, statsY);
 
         batch.end();
     }
@@ -64,7 +64,7 @@ public class MainScreen extends BaseScreen {
             float paddingY = 30f;
 
             String coinText = "( COIN )";
-            GlyphLayout coinLayout = new GlyphLayout(font, coinText);
+            GlyphLayout coinLayout = new GlyphLayout(bodyFont, coinText);
 
             // determine coin location
             float coinX = screenWidth/2f - coinLayout.width / 2f;
@@ -77,7 +77,7 @@ public class MainScreen extends BaseScreen {
 
             // stats button
             String statsText = "Stats";
-            GlyphLayout statsLayout = new GlyphLayout(font, statsText);
+            GlyphLayout statsLayout = new GlyphLayout(bodyFont, statsText);
 
             float statsX = screenWidth / 2f - statsLayout.width / 2f;
 

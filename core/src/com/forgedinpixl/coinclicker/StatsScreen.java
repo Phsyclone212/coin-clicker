@@ -28,11 +28,11 @@ public class StatsScreen extends BaseScreen {
         String tailsText = "Tails count: " + statsTracker.getTailsCount();
         String backText = "Back to Main";
 
-        GlyphLayout titleLayout = new GlyphLayout(font, titleText);
-        GlyphLayout totalLayout = new GlyphLayout(font, totalText);
-        GlyphLayout headsLayout = new GlyphLayout(font, headsText);
-        GlyphLayout tailsLayout = new GlyphLayout(font, tailsText);
-        GlyphLayout backLayout = new GlyphLayout(font, backText);
+        GlyphLayout titleLayout = new GlyphLayout(titleFont, titleText);
+        GlyphLayout totalLayout = new GlyphLayout(bodyFont, totalText);
+        GlyphLayout headsLayout = new GlyphLayout(bodyFont, headsText);
+        GlyphLayout tailsLayout = new GlyphLayout(bodyFont, tailsText);
+        GlyphLayout backLayout = new GlyphLayout(bodyFont, backText);
 
         ScreenUtils.clear(0,0,0,1);
 
@@ -40,11 +40,11 @@ public class StatsScreen extends BaseScreen {
 
         batch.begin();
 
-        font.draw(batch, titleText, screenWidth / 2f - titleLayout.width / 2f, titleY);
-        font.draw(batch, totalText, screenWidth / 2f - totalLayout.width / 2f, statsStartY);
-        font.draw(batch, headsText, screenWidth / 2f - headsLayout.width / 2f, statsStartY-lineSpacing);
-        font.draw(batch, tailsText, screenWidth / 2f - tailsLayout.width / 2f, statsStartY - lineSpacing*2);
-        font.draw(batch, backText, screenWidth / 2f - backLayout.width / 2f, backY);
+        titleFont.draw(batch, titleText, screenWidth / 2f - titleLayout.width / 2f, titleY);
+        bodyFont.draw(batch, totalText, screenWidth / 2f - totalLayout.width / 2f, statsStartY);
+        bodyFont.draw(batch, headsText, screenWidth / 2f - headsLayout.width / 2f, statsStartY-lineSpacing);
+        bodyFont.draw(batch, tailsText, screenWidth / 2f - tailsLayout.width / 2f, statsStartY - lineSpacing*2);
+        bodyFont.draw(batch, backText, screenWidth / 2f - backLayout.width / 2f, backY);
 
         batch.end();
     }
@@ -61,7 +61,7 @@ public class StatsScreen extends BaseScreen {
             float paddingY = 30f;
 
             String backText = "Back to Main";
-            GlyphLayout backLayout = new GlyphLayout(font, backText);
+            GlyphLayout backLayout = new GlyphLayout(bodyFont, backText);
             float backX = screenWidth / 2f - backLayout.width / 2f;
 
             float left = backX - paddingX;
