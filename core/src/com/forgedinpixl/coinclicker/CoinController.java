@@ -7,10 +7,10 @@ public class CoinController {
 
     private final StatsTracker statsTracker;
     private final Random random;
-    boolean animatedMode;
-    boolean flipInProgress;
-    String currentResultText; // will be replaced by result
-    boolean lastFlipWasHeads;
+    private boolean animatedMode;
+    private boolean flipInProgress;
+    private String currentResultText; // will be replaced by result
+    private boolean lastFlipWasHeads;
 
     public CoinController(StatsTracker statsTracker){
         this.statsTracker = statsTracker;
