@@ -27,6 +27,8 @@ public class StatsScreen extends BaseScreen {
         String totalText = "Total Flips: " + statsTracker.getTotalFlips();
         String headsText = "Heads count: " + statsTracker.getHeadsCount();
         String tailsText = "Tails count: " + statsTracker.getTailsCount();
+        String headPercent = "Heads %: " + statsTracker.getHeadsPercentage();
+        String tailsPercent = "Tails %: " + statsTracker.getTailsPercentage();
         String currentStreakText = "Current Streak: "+ statsTracker.getCurrentStreak()+" "+statsTracker.getSide();
         String longestStreakText = "Longest Streak: "+ statsTracker.getLongestStreak();
         String backText = "Back to Main";
@@ -35,6 +37,8 @@ public class StatsScreen extends BaseScreen {
         GlyphLayout totalLayout = new GlyphLayout(statsFont, totalText);
         GlyphLayout headsLayout = new GlyphLayout(statsFont, headsText);
         GlyphLayout tailsLayout = new GlyphLayout(statsFont, tailsText);
+        GlyphLayout hPercentLayout = new GlyphLayout(statsFont, headPercent);
+        GlyphLayout tPercentLayout = new GlyphLayout(statsFont, tailsPercent);
         GlyphLayout currentStreakLayout = new GlyphLayout(statsFont, currentStreakText);
         GlyphLayout longestStreakLayout = new GlyphLayout(statsFont, longestStreakText);
         GlyphLayout backLayout = new GlyphLayout(bodyFont, backText);
@@ -49,8 +53,10 @@ public class StatsScreen extends BaseScreen {
         statsFont.draw(batch, totalText, screenWidth / 2f - totalLayout.width / 2f, statsStartY);
         statsFont.draw(batch, headsText, screenWidth / 2f - headsLayout.width / 2f, statsStartY-lineSpacing);
         statsFont.draw(batch, tailsText, screenWidth / 2f - tailsLayout.width / 2f, statsStartY - lineSpacing*2);
-        statsFont.draw(batch, currentStreakText, screenWidth / 2f - currentStreakLayout.width / 2f, statsStartY - lineSpacing*3);
-        statsFont.draw(batch, longestStreakText, screenWidth / 2f - longestStreakLayout.width / 2f, statsStartY - lineSpacing*4);
+        statsFont.draw(batch, headPercent, screenWidth / 2f - hPercentLayout.width / 2f, statsStartY - lineSpacing*3);
+        statsFont.draw(batch, tailsPercent, screenWidth / 2f - tPercentLayout.width / 2f, statsStartY - lineSpacing*4);
+        statsFont.draw(batch, currentStreakText, screenWidth / 2f - currentStreakLayout.width / 2f, statsStartY - lineSpacing*5);
+        statsFont.draw(batch, longestStreakText, screenWidth / 2f - longestStreakLayout.width / 2f, statsStartY - lineSpacing*6);
         bodyFont.draw(batch, backText, screenWidth / 2f - backLayout.width / 2f, backY);
 
         batch.end();

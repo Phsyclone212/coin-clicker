@@ -21,16 +21,19 @@ public class MainScreen extends BaseScreen {
         float titleY = screenHeight * 0.85f;
         float coinY = screenHeight * 0.55f;
         float subtextY = screenHeight * 0.42f;
+        float streakY = screenHeight * 0.30f;
         float statsY = screenHeight * 0.15f;
 
         String titleText = "Coin Clicker";
         String coinText = "( COIN )";
         String resultText = coinController.getCurrentResultText();
+        String currentStreakText = "Current Streak: "+ statsTracker.getCurrentStreak();
         String statsText = "Stats";
 
         GlyphLayout titleLayout = new GlyphLayout(titleFont, titleText);
         GlyphLayout coinLayout = new GlyphLayout(bodyFont, coinText);
         GlyphLayout resultLayout = new GlyphLayout(bodyFont, resultText);
+        GlyphLayout currentStreakLayout = new GlyphLayout(statsFont, currentStreakText);
         GlyphLayout statsLayout = new GlyphLayout(bodyFont, statsText);
 
         ScreenUtils.clear(0, 0, 0, 1);
@@ -46,6 +49,7 @@ public class MainScreen extends BaseScreen {
         bodyFont.draw(batch, coinText, screenWidth / 2f - coinLayout.width / 2f, coinY);
         //draw subtext
         bodyFont.draw(batch, resultText, screenWidth / 2f - resultLayout.width / 2f, subtextY); // getResult default text is "Tap coin to flip" so it starting this way works.
+        statsFont.draw(batch, currentStreakText, screenWidth / 2f - currentStreakLayout.width / 2f, streakY);
         bodyFont.draw(batch, statsText, screenWidth / 2f - statsLayout.width / 2f, statsY);
 
         batch.end();

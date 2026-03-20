@@ -71,10 +71,13 @@ public class StatsTracker {
     }
 
     public String getSide(){
-        if(lastFlipWasHeads){
-            return "Heads.";
-        } else {
-            return "Tails.";
-        }
+            if(lastFlipWasHeads == null){
+                return "";
+            }
+            if (lastFlipWasHeads) {
+                return "Heads.";
+            } else {
+                return "Tails.";
+            }
     }
 }
