@@ -27,8 +27,8 @@ public class StatsScreen extends BaseScreen {
         String totalText = "Total Flips: " + statsTracker.getTotalFlips();
         String headsText = "Heads count: " + statsTracker.getHeadsCount();
         String tailsText = "Tails count: " + statsTracker.getTailsCount();
-        String headPercent = "Heads %: " + statsTracker.getHeadsPercentage();
-        String tailsPercent = "Tails %: " + statsTracker.getTailsPercentage();
+        String headPercent = "Heads: " + String.format("%.3f", statsTracker.getHeadsPercentage()) + "%";
+        String tailsPercent = "Tails: " + String.format("%.3f", statsTracker.getTailsPercentage()) + "%";
         String currentStreakText = "Current Streak: "+ statsTracker.getCurrentStreak()+" "+statsTracker.getSide();
         String longestStreakText = "Longest Streak: "+ statsTracker.getLongestStreak();
         String backText = "Back to Main";
