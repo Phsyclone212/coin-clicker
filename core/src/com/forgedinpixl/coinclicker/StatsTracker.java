@@ -8,7 +8,12 @@ public class StatsTracker {
     private int  tailsCount = 0;
     private int currentStreak = 0;
     private int longestStreak = 0;
+
+    private String longestStreakSide = "";
     private Boolean lastFlipWasHeads = null;
+
+    private String oddsHeads = "0"; // Strings to reflect 1 in X odds for heads or tails
+    private String oddsTails = "0";
 
     public void recordFlip(boolean wasHeads){
         // update counts respectively
@@ -31,6 +36,7 @@ public class StatsTracker {
 
         if(currentStreak > longestStreak){
             longestStreak = currentStreak;
+            longestStreakSide = getSide();
         }
 
         lastFlipWasHeads = wasHeads;
@@ -54,6 +60,10 @@ public class StatsTracker {
 
     public int getLongestStreak() {
         return longestStreak;
+    }
+
+    public String getLongestStreakSide() {
+        return longestStreakSide;
     }
 
     public double getHeadsPercentage() {

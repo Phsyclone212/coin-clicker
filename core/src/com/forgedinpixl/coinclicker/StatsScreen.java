@@ -30,7 +30,7 @@ public class StatsScreen extends BaseScreen {
         String headPercent = "Heads: " + String.format("%.3f", statsTracker.getHeadsPercentage()) + "%";
         String tailsPercent = "Tails: " + String.format("%.3f", statsTracker.getTailsPercentage()) + "%";
         String currentStreakText = "Current Streak: "+ statsTracker.getCurrentStreak()+" "+statsTracker.getSide();
-        String longestStreakText = "Longest Streak: "+ statsTracker.getLongestStreak();
+        String longestStreakText = "Longest Streak: "+ statsTracker.getLongestStreak()+" "+statsTracker.getLongestStreakSide();
         String backText = "Back to Main";
 
         GlyphLayout titleLayout = new GlyphLayout(titleFont, titleText);
