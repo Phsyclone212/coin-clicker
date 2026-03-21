@@ -12,9 +12,6 @@ public class StatsTracker {
     private String longestStreakSide = "";
     private Boolean lastFlipWasHeads = null;
 
-    private String oddsHeads = "0"; // Strings to reflect 1 in X odds for heads or tails
-    private String oddsTails = "0";
-
     public void recordFlip(boolean wasHeads){
         // update counts respectively
         totalFlips++;
@@ -89,5 +86,14 @@ public class StatsTracker {
             } else {
                 return "Tails.";
             }
+    }
+
+    public double getOddsNum(){
+        return Math.pow(2, longestStreak);
+    }
+
+    public double getOddsPercent(){
+        double probability = Math.pow(0.5,longestStreak); // raw num
+        return (double) probability * 100; // percentage ver of num
     }
 }
