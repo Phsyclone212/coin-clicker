@@ -18,8 +18,8 @@ public class StatsScreen extends BaseScreen {
         float screenWidth = game.viewport.getWorldWidth();
         float screenHeight = game.viewport.getWorldHeight();
 
-        float titleY = screenHeight*0.80f;
-        float statsStartY = screenHeight*0.65f;
+        float titleY = screenHeight*0.90f;
+        float statsStartY = screenHeight*0.80f;
         float lineSpacing = screenHeight*0.06f;
         float backY = screenHeight * .15f;
 
