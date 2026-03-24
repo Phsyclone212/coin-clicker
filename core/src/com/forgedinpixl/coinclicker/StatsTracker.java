@@ -1,5 +1,7 @@
 package com.forgedinpixl.coinclicker;
 
+import java.util.ArrayDeque;
+
 public class StatsTracker {
     // handling math + history
 
@@ -12,6 +14,8 @@ public class StatsTracker {
     private String longestStreakSide = "";
     private Boolean lastFlipWasHeads = null;
 
+    private ArrayDeque<String> flipHistory = new ArrayDeque<>();
+
     public void recordFlip(boolean wasHeads){
         // update counts respectively
         totalFlips++;
@@ -20,6 +24,10 @@ public class StatsTracker {
             headsCount++;
         } else {
             tailsCount++;
+        }
+        flipHistory.addFirst(wasHeads ? "H" : "T");
+        if(flipHistory.size() > 10){
+            flipHistory.removeLast();
         }
 
         //streak logic
@@ -33,7 +41,7 @@ public class StatsTracker {
 
         if(currentStreak > longestStreak){
             longestStreak = currentStreak;
-            longestStreakSide = getSide();
+            longestStreakSide = wasHeads ? "Heads" : "Tails";
         }
 
         lastFlipWasHeads = wasHeads;
@@ -95,5 +103,15 @@ public class StatsTracker {
     public double getOddsPercent(){
         double probability = Math.pow(0.5,longestStreak); // raw num
         return (double) probability * 100; // percentage ver of num
+    }
+
+    public String getHistoryText(){
+        StringBuilder sb = new StringBuilder("Recent Flips: ");
+
+        for(String flip : flipHistory){
+            sb.append(flip);
+        }
+
+        return sb.toString().trim();
     }
 }
