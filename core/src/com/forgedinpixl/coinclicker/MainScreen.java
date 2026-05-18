@@ -19,49 +19,95 @@ public class MainScreen extends BaseScreen {
         float screenHeight = game.viewport.getWorldHeight();
 
         float coinSize = 400f;
+        float margin = 80f;
 
-        //anchors
-        float titleY = screenHeight * 0.88f;
-        float coinY = screenHeight * 0.70f;         // top edge of coin
-        float subtextY = coinY - coinSize - 40f;    // just below coin
-        float streakY = subtextY - 80f;             // below subtext
-        float statsY = screenHeight * 0.10f;
+        // anchors
+        float titleY        = screenHeight * 0.95f;
+        float headerY       = titleY - 160f;        // Flip$ and Anim toggle row
+        float coinY         = screenHeight * 0.68f;
+        float subtextY      = coinY - coinSize - 80f;
+        float streakY       = subtextY - 100f;
+        float multiplierY = streakY - 100f;
+        float bottomRowY    = screenHeight * 0.08f; // Shop and Stats row
 
-        String titleText = "Coin Clicker";
-        String resultText = coinController.getCurrentResultText();
+        // strings
+        String titleText        = "Coin Clicker";
+        String flipDollarsText  = "Flip$: " + statsTracker.getFlipDollars();
+        String animText         = coinController.isAnimatedMode() ? "[ Anim: ON ]" : "[ Anim: OFF ]";
+        String resultText       = coinController.getCurrentResultText();
         String currentStreakText = "Current Streak: " + statsTracker.getCurrentStreak();
-        String statsText = "Stats";
+        String multiplierText = coinController.isAnimatedMode() ? "x2 Flip$ per flip" : "";
+        String statsText        = "[ Stats ]";
+        String shopText         = "[ Shop ]";
 
-        GlyphLayout titleLayout = new GlyphLayout(titleFont, titleText);
-        GlyphLayout resultLayout = new GlyphLayout(bodyFont, resultText);
-        GlyphLayout currentStreakLayout = new GlyphLayout(statsFont, currentStreakText);
-        GlyphLayout statsLayout = new GlyphLayout(bodyFont, statsText);
+        // layouts
+        GlyphLayout titleLayout         = new GlyphLayout(titleFont, titleText);
+        GlyphLayout flipDollarsLayout   = new GlyphLayout(statsFont, flipDollarsText);
+        GlyphLayout animLayout          = new GlyphLayout(statsFont, animText);
+        GlyphLayout resultLayout        = new GlyphLayout(bodyFont, resultText);
+        GlyphLayout streakLayout        = new GlyphLayout(statsFont, currentStreakText);
+        GlyphLayout multiplierLayout = new GlyphLayout(statsFont, multiplierText);
+        GlyphLayout statsLayout         = new GlyphLayout(bodyFont, statsText);
+        GlyphLayout shopLayout          = new GlyphLayout(bodyFont, shopText);
 
         ScreenUtils.clear(0, 0, 0, 1);
 
-        handleInput(screenWidth, screenHeight, coinY, coinSize, statsY);
+        handleInput(screenWidth, screenHeight, coinY, coinSize, headerY, bottomRowY,
+                animLayout, statsLayout, shopLayout, margin);
 
         coinController.update(delta);
 
         batch.begin();
 
-        titleFont.draw(batch, titleText, screenWidth / 2f - titleLayout.width / 2f, titleY);
+        // title — centered
+        titleFont.draw(batch, titleText,
+                screenWidth / 2f - titleLayout.width / 2f, titleY);
 
-        Texture coinTexture = coinController.wasLastFlipHeads()
+        // Flip$ — top left
+        statsFont.draw(batch, flipDollarsText, margin, headerY);
+
+        // Anim toggle — top right
+        statsFont.draw(batch, animText,
+                screenWidth - margin - animLayout.width, headerY);
+
+        // coin
+        Texture coinTexture = coinController.isShowingHeads()
                 ? game.assetStore.coinHeads
                 : game.assetStore.coinTails;
 
         float coinX = screenWidth / 2f - coinSize / 2f;
-        batch.draw(coinTexture, coinX, coinY - coinSize, coinSize, coinSize);
+        float xScale = coinController.getCurrentXScale();
+        float scaledWidth = coinSize * xScale;
+        float offsetX = (coinSize - scaledWidth) / 2f;
 
-        bodyFont.draw(batch, resultText, screenWidth / 2f - resultLayout.width / 2f, subtextY);
-        statsFont.draw(batch, currentStreakText, screenWidth / 2f - currentStreakLayout.width / 2f, streakY);
-        bodyFont.draw(batch, statsText, screenWidth / 2f - statsLayout.width / 2f, statsY);
+        batch.draw(coinTexture, coinX + offsetX, coinY - coinSize, scaledWidth, coinSize);
+
+        // result and streak — centered
+        bodyFont.draw(batch, resultText,
+                screenWidth / 2f - resultLayout.width / 2f, subtextY);
+        statsFont.draw(batch, currentStreakText,
+                screenWidth / 2f - streakLayout.width / 2f, streakY);
+
+        // bonus rate for animation toggled on
+        statsFont.draw(batch, multiplierText,
+                screenWidth / 2f - multiplierLayout.width / 2f, multiplierY);
+
+        // Shop — bottom left (greyed out via naming, dead button)
+        bodyFont.draw(batch, shopText, margin, bottomRowY);
+
+        // Stats — bottom right
+        bodyFont.draw(batch, statsText,
+                screenWidth - margin - statsLayout.width, bottomRowY);
 
         batch.end();
     }
 
-    private void handleInput(float screenWidth, float screenHeight, float coinY, float coinSize, float statsY) {
+    private void handleInput(float screenWidth, float screenHeight,
+                             float coinY, float coinSize,
+                             float headerY, float bottomRowY,
+                             GlyphLayout animLayout, GlyphLayout statsLayout,
+                             GlyphLayout shopLayout, float margin) {
+
         if (Gdx.input.justTouched()) {
 
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -69,32 +115,48 @@ public class MainScreen extends BaseScreen {
             float touchX = touchPos.x;
             float touchY = touchPos.y;
 
-            float coinX = screenWidth / 2f - coinSize / 2f;
+            float padding = 30f;
 
-            // hitbox derived from actual coin position and size
+            // coin hitbox
+            float coinX      = screenWidth / 2f - coinSize / 2f;
             float coinLeft   = coinX;
             float coinRight  = coinX + coinSize;
             float coinBottom = coinY - coinSize;
             float coinTop    = coinY;
 
-            // stats button
-            String statsText = "Stats";
-            GlyphLayout statsLayout = new GlyphLayout(bodyFont, statsText);
-            float statsX = screenWidth / 2f - statsLayout.width / 2f;
-            float padding = 30f;
+            // anim toggle hitbox — top right
+            float animX      = screenWidth - margin - animLayout.width;
+            float animLeft   = animX - padding;
+            float animRight  = animX + animLayout.width + padding;
+            float animBottom = headerY - animLayout.height - padding;
+            float animTop    = headerY + padding;
 
-            float left   = statsX - padding;
-            float right  = statsX + statsLayout.width + padding;
-            float bottom = statsY - statsLayout.height - padding;
-            float top    = statsY + padding;
+            // stats hitbox — bottom right
+            float statsX      = screenWidth - margin - statsLayout.width;
+            float statsLeft   = statsX - padding;
+            float statsRight  = statsX + statsLayout.width + padding;
+            float statsBottom = bottomRowY - statsLayout.height - padding;
+            float statsTop    = bottomRowY + padding;
 
-            if(touchX >= coinLeft && touchX <= coinRight && touchY >= coinBottom && touchY <= coinTop){
+            // coin tap
+            if (touchX >= coinLeft && touchX <= coinRight
+                    && touchY >= coinBottom && touchY <= coinTop) {
                 coinController.requestFlip();
             }
 
-            if(touchX >= left && touchX <= right && touchY >= bottom && touchY <= top){
+            // anim toggle tap
+            if (touchX >= animLeft && touchX <= animRight
+                    && touchY >= animBottom && touchY <= animTop) {
+                coinController.setAnimatedMode(!coinController.isAnimatedMode());
+            }
+
+            // stats tap
+            if (touchX >= statsLeft && touchX <= statsRight
+                    && touchY >= statsBottom && touchY <= statsTop) {
                 game.setScreen(new StatsScreen(game));
             }
+
+            // shop — dead button, no action
         }
     }
 }

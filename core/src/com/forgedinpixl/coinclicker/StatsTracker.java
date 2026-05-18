@@ -7,6 +7,8 @@ import com.badlogic.gdx.Preferences;
 public class StatsTracker {
     // handling math + history
 
+    private int flipDollars = 0;
+
     private int totalFlips = 0;
     private int  headsCount = 0;
     private int  tailsCount = 0;
@@ -18,9 +20,11 @@ public class StatsTracker {
 
     private ArrayDeque<String> flipHistory = new ArrayDeque<>();
 
-    public void recordFlip(boolean wasHeads){
+    public void recordFlip(boolean wasHeads, boolean animated){
         // update counts respectively
         totalFlips++;
+
+        flipDollars += animated ? 2 : 1;
 
         if(wasHeads){
             headsCount++;
@@ -118,6 +122,7 @@ public class StatsTracker {
     }
 
     public void saveToPrefs(Preferences prefs) {
+        prefs.putInteger("flipDollars", flipDollars);
         prefs.putInteger("totalFlips", totalFlips);
         prefs.putInteger("headsCount", headsCount);
         prefs.putInteger("tailsCount", tailsCount);
@@ -131,6 +136,7 @@ public class StatsTracker {
     }
 
     public void loadFromPrefs(Preferences prefs) {
+        flipDollars = prefs.getInteger("flipDollars", 0);
         totalFlips = prefs.getInteger("totalFlips", 0);
         headsCount = prefs.getInteger("headsCount", 0);
         tailsCount = prefs.getInteger("tailsCount", 0);
@@ -148,5 +154,9 @@ public class StatsTracker {
                 flipHistory.addLast(entry);
             }
         }
+    }
+
+    public int getFlipDollars(){
+        return flipDollars;
     }
 }
