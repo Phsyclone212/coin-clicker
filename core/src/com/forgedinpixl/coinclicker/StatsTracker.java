@@ -1,6 +1,8 @@
 package com.forgedinpixl.coinclicker;
 
 import java.util.ArrayDeque;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 
 public class StatsTracker {
     // handling math + history
@@ -113,5 +115,38 @@ public class StatsTracker {
         }
 
         return sb.toString().trim();
+    }
+
+    public void saveToPrefs(Preferences prefs) {
+        prefs.putInteger("totalFlips", totalFlips);
+        prefs.putInteger("headsCount", headsCount);
+        prefs.putInteger("tailsCount", tailsCount);
+        prefs.putInteger("currentStreak", currentStreak);
+        prefs.putInteger("longestStreak", longestStreak);
+        prefs.putString("longestStreakSide", longestStreakSide);
+        prefs.putBoolean("hasLastFlip", lastFlipWasHeads != null);
+        prefs.putBoolean("lastFlipWasHeads", lastFlipWasHeads != null && lastFlipWasHeads);
+        prefs.putString("flipHistory", String.join(",", flipHistory));
+        prefs.flush(); // libGDX equivalent of apply()
+    }
+
+    public void loadFromPrefs(Preferences prefs) {
+        totalFlips = prefs.getInteger("totalFlips", 0);
+        headsCount = prefs.getInteger("headsCount", 0);
+        tailsCount = prefs.getInteger("tailsCount", 0);
+        currentStreak = prefs.getInteger("currentStreak", 0);
+        longestStreak = prefs.getInteger("longestStreak", 0);
+        longestStreakSide = prefs.getString("longestStreakSide", "");
+
+        boolean hasLastFlip = prefs.getBoolean("hasLastFlip", false);
+        lastFlipWasHeads = hasLastFlip ? prefs.getBoolean("lastFlipWasHeads", false) : null;
+
+        String history = prefs.getString("flipHistory", "");
+        flipHistory.clear();
+        if (!history.isEmpty()) {
+            for (String entry : history.split(",")) {
+                flipHistory.addLast(entry);
+            }
+        }
     }
 }

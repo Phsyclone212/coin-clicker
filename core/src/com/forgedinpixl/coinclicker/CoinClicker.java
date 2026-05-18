@@ -2,6 +2,7 @@ package com.forgedinpixl.coinclicker;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,6 +19,8 @@ public class CoinClicker extends Game {
 	public BitmapFont statsFont;
 	public StatsTracker statsTracker;
 	public CoinController coinController;
+
+	private Preferences prefs;
 	public AssetStore assetStore;
 
 	public OrthographicCamera camera;
@@ -42,6 +45,9 @@ public class CoinClicker extends Game {
 		statsTracker = new StatsTracker();
 		coinController = new CoinController(statsTracker);
 
+		prefs = Gdx.app.getPreferences("coinclicker_stats");
+		statsTracker.loadFromPrefs(prefs);
+
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(1080, 1920, camera);
 		viewport.apply();
@@ -59,7 +65,12 @@ public class CoinClicker extends Game {
 	}
 
 	@Override
+	public void pause() {
+		statsTracker.saveToPrefs(prefs);
+	}
+	@Override
 	public void dispose () {
+		statsTracker.saveToPrefs(prefs);
 		batch.dispose();
 		titleFont.dispose();
 		bodyFont.dispose();
