@@ -44,6 +44,8 @@ public class CoinClicker extends Game {
 
 		statsTracker = new StatsTracker();
 		coinController = new CoinController(statsTracker);
+		assetStore = new AssetStore();
+		assetStore.load();
 
 		prefs = Gdx.app.getPreferences("coinclicker_stats");
 		statsTracker.loadFromPrefs(prefs);
@@ -71,6 +73,7 @@ public class CoinClicker extends Game {
 	@Override
 	public void dispose () {
 		statsTracker.saveToPrefs(prefs);
+		assetStore.dispose();
 		batch.dispose();
 		titleFont.dispose();
 		bodyFont.dispose();
