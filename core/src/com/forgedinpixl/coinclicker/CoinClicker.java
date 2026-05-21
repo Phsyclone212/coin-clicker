@@ -20,7 +20,13 @@ public class CoinClicker extends Game {
 	public StatsTracker statsTracker;
 	public CoinController coinController;
 
-	private Preferences prefs;
+	public CoinRegistry coinRegistry;
+	public CoinInventory coinInventory;
+	public CoinUnlockManager coinUnlockManager;
+
+	public RollManager rollManager;
+
+	public Preferences prefs;
 	public AssetStore assetStore;
 
 	public OrthographicCamera camera;
@@ -42,13 +48,25 @@ public class CoinClicker extends Game {
 		statsFont = generator.generateFont(statsParam);
 		generator.dispose();
 
+		// data layer first
+		coinRegistry = new CoinRegistry();
 		statsTracker = new StatsTracker();
-		coinController = new CoinController(statsTracker);
-		assetStore = new AssetStore();
-		assetStore.load();
+		coinInventory = new CoinInventory(coinRegistry);
+		coinUnlockManager = new CoinUnlockManager(coinInventory, coinRegistry, statsTracker);
 
+		// prefs loaded after all objects exist
 		prefs = Gdx.app.getPreferences("coinclicker_stats");
 		statsTracker.loadFromPrefs(prefs);
+		coinInventory.loadFromPrefs(prefs);
+		coinUnlockManager.loadFromPrefs(prefs);
+		rollManager = new RollManager(coinInventory, coinRegistry, statsTracker);
+
+		// assets loaded after registry exists
+		assetStore = new AssetStore();
+		assetStore.loadCoins(coinRegistry);
+
+		coinController = new CoinController(statsTracker);
+		coinController.setAnimatedMode(prefs.getBoolean("animatedMode", false));
 
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(1080, 1920, camera);
@@ -69,10 +87,18 @@ public class CoinClicker extends Game {
 	@Override
 	public void pause() {
 		statsTracker.saveToPrefs(prefs);
+		coinInventory.saveToPrefs(prefs);
+		coinUnlockManager.saveToPrefs(prefs);
+		prefs.putBoolean("animatedMode", coinController.isAnimatedMode());
+		prefs.flush();
 	}
 	@Override
 	public void dispose () {
 		statsTracker.saveToPrefs(prefs);
+		coinInventory.saveToPrefs(prefs);
+		coinUnlockManager.saveToPrefs(prefs);
+		prefs.putBoolean("animatedMode", coinController.isAnimatedMode());
+		prefs.flush();
 		assetStore.dispose();
 		batch.dispose();
 		titleFont.dispose();

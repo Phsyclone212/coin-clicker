@@ -18,7 +18,7 @@ public class MainScreen extends BaseScreen {
         float screenWidth = game.viewport.getWorldWidth();
         float screenHeight = game.viewport.getWorldHeight();
 
-        float coinSize = 400f;
+        float coinSize = 600f;
         float margin = 80f;
 
         // anchors
@@ -37,7 +37,7 @@ public class MainScreen extends BaseScreen {
         String resultText       = coinController.getCurrentResultText();
         String currentStreakText = "Current Streak: " + statsTracker.getCurrentStreak();
         String multiplierText = coinController.isAnimatedMode() ? "x2 Flip$ per flip" : "";
-        String statsText        = "[ Stats ]";
+        String collectionText        = "[ Collection ]";
         String shopText         = "[ Shop ]";
 
         // layouts
@@ -47,7 +47,7 @@ public class MainScreen extends BaseScreen {
         GlyphLayout resultLayout        = new GlyphLayout(bodyFont, resultText);
         GlyphLayout streakLayout        = new GlyphLayout(statsFont, currentStreakText);
         GlyphLayout multiplierLayout = new GlyphLayout(statsFont, multiplierText);
-        GlyphLayout statsLayout         = new GlyphLayout(bodyFont, statsText);
+        GlyphLayout statsLayout         = new GlyphLayout(bodyFont, collectionText);
         GlyphLayout shopLayout          = new GlyphLayout(bodyFont, shopText);
 
         ScreenUtils.clear(0, 0, 0, 1);
@@ -56,6 +56,7 @@ public class MainScreen extends BaseScreen {
                 animLayout, statsLayout, shopLayout, margin);
 
         coinController.update(delta);
+        game.coinUnlockManager.checkMilestoneUnlocks();
 
         batch.begin();
 
@@ -71,9 +72,10 @@ public class MainScreen extends BaseScreen {
                 screenWidth - margin - animLayout.width, headerY);
 
         // coin
+        CoinDefinition activeCoin = game.coinInventory.getActiveCoin();
         Texture coinTexture = coinController.isShowingHeads()
-                ? game.assetStore.coinHeads
-                : game.assetStore.coinTails;
+                ? game.assetStore.getHeads(activeCoin)
+                : game.assetStore.getTails(activeCoin);
 
         float coinX = screenWidth / 2f - coinSize / 2f;
         float xScale = coinController.getCurrentXScale();
@@ -96,7 +98,7 @@ public class MainScreen extends BaseScreen {
         bodyFont.draw(batch, shopText, margin, bottomRowY);
 
         // Stats — bottom right
-        bodyFont.draw(batch, statsText,
+        bodyFont.draw(batch, collectionText,
                 screenWidth - margin - statsLayout.width, bottomRowY);
 
         batch.end();
@@ -132,11 +134,11 @@ public class MainScreen extends BaseScreen {
             float animTop    = headerY + padding;
 
             // stats hitbox — bottom right
-            float statsX      = screenWidth - margin - statsLayout.width;
-            float statsLeft   = statsX - padding;
-            float statsRight  = statsX + statsLayout.width + padding;
-            float statsBottom = bottomRowY - statsLayout.height - padding;
-            float statsTop    = bottomRowY + padding;
+            float collectionX      = screenWidth - margin - statsLayout.width;
+            float collectionLeft   = collectionX - padding;
+            float collectionRight  = collectionX + statsLayout.width + padding;
+            float collectionBottom = bottomRowY - statsLayout.height - padding;
+            float collectionTop    = bottomRowY + padding;
 
             // coin tap
             if (touchX >= coinLeft && touchX <= coinRight
@@ -150,13 +152,22 @@ public class MainScreen extends BaseScreen {
                 coinController.setAnimatedMode(!coinController.isAnimatedMode());
             }
 
-            // stats tap
-            if (touchX >= statsLeft && touchX <= statsRight
-                    && touchY >= statsBottom && touchY <= statsTop) {
-                game.setScreen(new StatsScreen(game));
+            // collection tap
+            if (touchX >= collectionLeft && touchX <= collectionRight
+                    && touchY >= collectionBottom && touchY <= collectionTop) {
+                game.setScreen(new CollectionScreen(game));
             }
 
-            // shop — dead button, no action
+            // shop hitbox — bottom left
+            float shopLeft   = margin - padding;
+            float shopRight  = margin + shopLayout.width + padding;
+            float shopBottom = bottomRowY - shopLayout.height - padding;
+            float shopTop    = bottomRowY + padding;
+
+            if (touchX >= shopLeft && touchX <= shopRight
+                    && touchY >= shopBottom && touchY <= shopTop) {
+                game.setScreen(new ShopScreen(game));
+            }
         }
     }
 }

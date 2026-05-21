@@ -159,4 +159,8 @@ public class StatsTracker {
     public int getFlipDollars(){
         return flipDollars;
     }
+
+    public void spendFlipDollars(int amount) {
+        flipDollars = Math.max(0, flipDollars - amount);
+    }
 }
