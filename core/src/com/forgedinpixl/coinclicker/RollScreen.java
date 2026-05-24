@@ -17,8 +17,9 @@ public class RollScreen extends BaseScreen {
     private boolean allRevealed = false;
 
     private static final float COIN_SIZE = 200f;
-    private static final float PADDING = 50f;
-    private static final int COLS = 3;
+    private static final float PADDING_X = 40f;
+    private static final float PADDING_Y = 80f;
+    private static final int COLS = 2;
 
     public RollScreen(CoinClicker game, List<CoinDefinition> results) {
         super(game);
@@ -65,31 +66,29 @@ public class RollScreen extends BaseScreen {
                 screenWidth / 2f - titleLayout.width / 2f, titleY);
 
         // coin grid
-        float slotSize   = COIN_SIZE + PADDING;
-        float gridWidth  = COLS * slotSize - PADDING;
+        float slotW = COIN_SIZE + PADDING_X;
+        float slotH = COIN_SIZE + PADDING_Y;
+        float gridWidth  = COLS * slotW - PADDING_X;
         float gridStartX = screenWidth / 2f - gridWidth / 2f;
 
         for (int i = 0; i < results.size(); i++) {
             int col = i % COLS;
             int row = i / COLS;
 
-            float x = gridStartX + col * slotSize;
-            float y = gridStartY - row * slotSize;
+            float x = gridStartX + col * slotW;
+            float y = gridStartY - row * slotH;
 
             if (i < revealedCount) {
-                // revealed — show coin
                 CoinDefinition def = results.get(i);
                 Texture texture = game.assetStore.getHeads(def);
                 batch.draw(texture, x, y - COIN_SIZE, COIN_SIZE, COIN_SIZE);
 
-                // rarity label
                 String rarityText = def.rarity.name();
                 GlyphLayout rarityLayout = new GlyphLayout(statsFont, rarityText);
                 statsFont.draw(batch, rarityText,
                         x + COIN_SIZE / 2f - rarityLayout.width / 2f,
-                        y - COIN_SIZE - 20f);
+                        y - COIN_SIZE - 24f);
             } else {
-                // unrevealed — show locked
                 batch.draw(game.assetStore.lockedCoin,
                         x, y - COIN_SIZE, COIN_SIZE, COIN_SIZE);
             }
