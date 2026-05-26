@@ -11,30 +11,30 @@ public class CoinRegistry {
 
     public CoinRegistry() {
         register(new CoinDefinition(
-                "flips_1c_a", "1c Coin",
-                CoinDefinition.Rarity.A, CoinDefinition.Set.FLIPS,
-                "coins/flips/flips_1c_heads.png", "coins/flips/flips_tails_a.png",
+                "pixl_1c_a", "1c Coin",
+                CoinDefinition.Rarity.A, CoinDefinition.Set.PIXL,
+                "coins/pixl/pixl_1c_heads.png", "coins/pixl/pixl_tails_a.png",
                 CoinDefinition.UnlockType.ROLL, 0, false
         ));
 
         register(new CoinDefinition(
-                "flips_1c_b", "1c Coin (B)",
-                CoinDefinition.Rarity.B, CoinDefinition.Set.FLIPS,
-                "coins/flips/flips_1c_heads.png", "coins/flips/flips_tails_b.png",
+                "pixl_1c_b", "1c Coin (B)",
+                CoinDefinition.Rarity.B, CoinDefinition.Set.PIXL,
+                "coins/pixl/pixl_1c_heads.png", "coins/pixl/pixl_tails_b.png",
                 CoinDefinition.UnlockType.ROLL, 0, false
         ));
 
         register(new CoinDefinition(
-                "flips_2c_a", "2c Coin",
-                CoinDefinition.Rarity.A, CoinDefinition.Set.FLIPS,
-                "coins/flips/flips_2c_heads.png", "coins/flips/flips_tails_a.png",
+                "pixl_2c_a", "2c Coin",
+                CoinDefinition.Rarity.A, CoinDefinition.Set.PIXL,
+                "coins/pixl/pixl_2c_heads.png", "coins/pixl/pixl_tails_a.png",
                 CoinDefinition.UnlockType.ROLL, 0, false
         ));
 
         register(new CoinDefinition(
-                "flips_2c_b", "2c Coin (B)",
-                CoinDefinition.Rarity.B, CoinDefinition.Set.FLIPS,
-                "coins/flips/flips_2c_heads.png", "coins/flips/flips_tails_b.png",
+                "pixl_2c_b", "2c Coin (B)",
+                CoinDefinition.Rarity.B, CoinDefinition.Set.PIXL,
+                "coins/pixl/pixl_2c_heads.png", "coins/pixl/pixl_tails_b.png",
                 CoinDefinition.UnlockType.ROLL, 0, false
         ));
 

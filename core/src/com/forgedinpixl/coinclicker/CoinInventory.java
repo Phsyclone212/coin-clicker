@@ -8,7 +8,7 @@ public class CoinInventory {
 
     private static final String ACTIVE_COIN_KEY = "activeCoinId";
     private static final String QUANTITY_PREFIX = "coin_qty_";
-    private static final String DEFAULT_COIN_ID = "flips_1c_a";
+    private static final String DEFAULT_COIN_ID = "pixl_1c_a";
 
     private final Map<String, Integer> owned = new HashMap<>();
     private String activeCoinId;

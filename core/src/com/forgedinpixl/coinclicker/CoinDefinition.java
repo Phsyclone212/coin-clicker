@@ -14,7 +14,7 @@ public class CoinDefinition {
     }
 
     public enum Set {
-        FLIPS, MILESTONE, SPECIAL
+        PIXL, MILESTONE, SPECIAL
     }
 
     public final String id;
