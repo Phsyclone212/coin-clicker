@@ -30,7 +30,7 @@ public class ShopScreen extends BaseScreen {
 
         // anchors
         float titleY         = screenHeight * 0.95f;
-        float balanceY       = titleY - 120f;
+        float balanceY       = titleY - 140f;
         float sectionY       = balanceY - 120f;
         float commonY        = sectionY - 120f;
         float commonBuyY     = commonY - 100f;

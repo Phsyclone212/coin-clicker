@@ -102,8 +102,8 @@ public class StatsTracker {
             }
     }
 
-    public double getOddsNum(){
-        return Math.pow(2, longestStreak);
+    public int getOddsNum(){
+        return (int) Math.pow(2, longestStreak);
     }
 
     public double getOddsPercent(){
