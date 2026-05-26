@@ -32,17 +32,17 @@ public class MainScreen extends BaseScreen {
 
         // strings
         String titleText        = "Coin Clicker";
-        String flipDollarsText  = "Flip$: " + statsTracker.getFlipDollars();
+        String pointsText  = "Points: " + statsTracker.getPoints();
         String animText         = coinController.isAnimatedMode() ? "[ Anim: ON ]" : "[ Anim: OFF ]";
         String resultText       = coinController.getCurrentResultText();
         String currentStreakText = "Current Streak: " + statsTracker.getCurrentStreak();
-        String multiplierText = coinController.isAnimatedMode() ? "x2 Flip$ per flip" : "";
+        String multiplierText = coinController.isAnimatedMode() ? "x2 Points per flip" : "";
         String collectionText        = "[ Collection ]";
         String shopText         = "[ Shop ]";
 
         // layouts
         GlyphLayout titleLayout         = new GlyphLayout(titleFont, titleText);
-        GlyphLayout flipDollarsLayout   = new GlyphLayout(statsFont, flipDollarsText);
+        GlyphLayout flipDollarsLayout   = new GlyphLayout(statsFont, pointsText);
         GlyphLayout animLayout          = new GlyphLayout(statsFont, animText);
         GlyphLayout resultLayout        = new GlyphLayout(bodyFont, resultText);
         GlyphLayout streakLayout        = new GlyphLayout(statsFont, currentStreakText);
@@ -65,7 +65,7 @@ public class MainScreen extends BaseScreen {
                 screenWidth / 2f - titleLayout.width / 2f, titleY);
 
         // Flip$ — top left
-        statsFont.draw(batch, flipDollarsText, margin, headerY);
+        statsFont.draw(batch, pointsText, margin, headerY);
 
         // Anim toggle — top right
         statsFont.draw(batch, animText,

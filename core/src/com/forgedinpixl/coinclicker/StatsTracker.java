@@ -1,13 +1,13 @@
 package com.forgedinpixl.coinclicker;
 
 import java.util.ArrayDeque;
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.Preferences;
 
 public class StatsTracker {
     // handling math + history
 
-    private int flipDollars = 0;
+    private int points = 0;
 
     private int totalFlips = 0;
     private int  headsCount = 0;
@@ -24,7 +24,7 @@ public class StatsTracker {
         // update counts respectively
         totalFlips++;
 
-        flipDollars += animated ? 2 : 1;
+        points += animated ? 2 : 1;
 
         if(wasHeads){
             headsCount++;
@@ -122,7 +122,7 @@ public class StatsTracker {
     }
 
     public void saveToPrefs(Preferences prefs) {
-        prefs.putInteger("flipDollars", flipDollars);
+        prefs.putInteger("points", points);
         prefs.putInteger("totalFlips", totalFlips);
         prefs.putInteger("headsCount", headsCount);
         prefs.putInteger("tailsCount", tailsCount);
@@ -136,7 +136,7 @@ public class StatsTracker {
     }
 
     public void loadFromPrefs(Preferences prefs) {
-        flipDollars = prefs.getInteger("flipDollars", 0);
+        points = prefs.getInteger("points", prefs.getInteger("flipDollars", 0));
         totalFlips = prefs.getInteger("totalFlips", 0);
         headsCount = prefs.getInteger("headsCount", 0);
         tailsCount = prefs.getInteger("tailsCount", 0);
@@ -156,11 +156,11 @@ public class StatsTracker {
         }
     }
 
-    public int getFlipDollars(){
-        return flipDollars;
+    public int getPoints(){
+        return points;
     }
 
-    public void spendFlipDollars(int amount) {
-        flipDollars = Math.max(0, flipDollars - amount);
+    public void spendPoints(int amount) {
+        points = Math.max(0, points - amount);
     }
 }

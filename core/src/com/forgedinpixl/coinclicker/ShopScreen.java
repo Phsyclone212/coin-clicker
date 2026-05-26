@@ -44,16 +44,16 @@ public class ShopScreen extends BaseScreen {
 
         // strings
         String titleText      = "Shop";
-        String balanceText    = "Flip$: " + statsTracker.getFlipDollars();
+        String balanceText    = "Points: " + statsTracker.getPoints();
         String sectionText    = "-- Coin Rolls --";
-        String commonText     = "Common Roll  (10 coins)  |  50 Flip$";
+        String commonText     = "Common Roll  (10 coins)  |  50 Points";
         String commonBuyText  = game.rollManager.canAffordCommon()
                 ? "[ Buy Common Roll ]"
-                : "[ Need 50 Flip$ ]";
-        String rareText       = "Rare Roll  (10 coins)  |  150 Flip$";
+                : "[ Need 50 Points ]";
+        String rareText       = "Rare Roll  (10 coins)  |  150 Points";
         String rareBuyText    = game.rollManager.canAffordRare()
                 ? "[ Buy Rare Roll ]"
-                : "[ Need 150 Flip$ ]";
+                : "[ Need 150 Points ]";
         String donorSectionText = "-- Support Development --";
         String donorDescText  = game.coinUnlockManager.isDonor()
                 ? "Thank you for your support!"
@@ -179,7 +179,7 @@ public class ShopScreen extends BaseScreen {
                         game.setScreen(new RollScreen(game, results));
                     }
                 } else {
-                    feedbackText = "Not enough Flip$!";
+                    feedbackText = "Not enough Points!";
                     feedbackTimer = FEEDBACK_DURATION;
                 }
             }
@@ -193,7 +193,7 @@ public class ShopScreen extends BaseScreen {
                         game.setScreen(new RollScreen(game, results));
                     }
                 } else {
-                    feedbackText = "Not enough Flip$!";
+                    feedbackText = "Not enough Points!";
                     feedbackTimer = FEEDBACK_DURATION;
                 }
             }
@@ -208,11 +208,6 @@ public class ShopScreen extends BaseScreen {
                     feedbackText = "Thank you for your support!";
                     feedbackTimer = FEEDBACK_DURATION;
                 }
-            }
-
-            if (touchX >= backLeft && touchX <= backRight
-                    && touchY >= backBottom && touchY <= backTop) {
-                game.setScreen(new MainScreen(game));
             }
         }
     }

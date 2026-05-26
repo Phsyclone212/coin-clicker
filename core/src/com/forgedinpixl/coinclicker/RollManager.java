@@ -24,11 +24,11 @@ public class RollManager {
     }
 
     public boolean canAffordCommon() {
-        return statsTracker.getFlipDollars() >= COMMON_ROLL_COST;
+        return statsTracker.getPoints() >= COMMON_ROLL_COST;
     }
 
     public boolean canAffordRare() {
-        return statsTracker.getFlipDollars() >= RARE_ROLL_COST;
+        return statsTracker.getPoints() >= RARE_ROLL_COST;
     }
 
     public int getCommonRollCost() { return COMMON_ROLL_COST; }
@@ -36,13 +36,13 @@ public class RollManager {
 
     public List<CoinDefinition> performCommonRoll() {
         if (!canAffordCommon()) return null;
-        statsTracker.spendFlipDollars(COMMON_ROLL_COST);
+        statsTracker.spendPoints(COMMON_ROLL_COST);
         return generateRoll(RollType.COMMON);
     }
 
     public List<CoinDefinition> performRareRoll() {
         if (!canAffordRare()) return null;
-        statsTracker.spendFlipDollars(RARE_ROLL_COST);
+        statsTracker.spendPoints(RARE_ROLL_COST);
         return generateRoll(RollType.RARE);
     }
 
