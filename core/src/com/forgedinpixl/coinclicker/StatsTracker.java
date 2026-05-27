@@ -163,4 +163,11 @@ public class StatsTracker {
     public void spendPoints(int amount) {
         points = Math.max(0, points - amount);
     }
+
+    public void resetStreaks() {
+        currentStreak = 0;
+        longestStreak = 0;
+        longestStreakSide = "";
+        lastFlipWasHeads = null;
+    }
 }

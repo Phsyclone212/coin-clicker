@@ -18,7 +18,7 @@ buildscript {
 allprojects {
     apply plugin: "eclipse"
 
-    version = '1.0'
+    version = '0.1.0'
     ext {
         appName = "coin-clicker"
         gdxVersion = '1.12.1'
