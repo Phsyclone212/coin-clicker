@@ -9,7 +9,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.2'
+        classpath 'com.android.tools.build:gradle:8.5.2'
         
 
     }
@@ -21,7 +21,7 @@ allprojects {
     version = '0.1.0'
     ext {
         appName = "coin-clicker"
-        gdxVersion = '1.12.1'
+        gdxVersion = '1.13.1'
         roboVMVersion = '2.3.21'
         box2DLightsVersion = '1.5'
         ashleyVersion = '1.7.4'
