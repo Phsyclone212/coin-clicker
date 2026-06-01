@@ -10,14 +10,25 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class CollectionScreen extends BaseScreen implements GestureDetector.GestureListener {
 
+    private static class CoinSlot {
+        public final String expectedId;
+        public final String displayName;
+        public final CoinDefinition def;
+
+        public CoinSlot(String expectedId, String displayName, CoinDefinition def) {
+            this.expectedId = expectedId;
+            this.displayName = displayName;
+            this.def = def;
+        }
+    }
+
     private float scrollY = 0f;
     private float maxScroll = 0f;
+    private boolean scrollCalculated = false;
     private GestureDetector gestureDetector;
     private ShapeRenderer shapeRenderer;
 
@@ -25,20 +36,9 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
     private static final float PADDING = 85f;
     private static final int COLS = 2;
     private static final float HEADER_HEIGHT = 300f;
-    private static final float GRID_START_Y_FACTOR = 0.85f;
+    private static final float GRID_START_Y_FACTOR = 0.82f;
 
     private List<Object> renderList = new ArrayList<>();
-
-    private final Comparator<CoinDefinition> coinComparator = new Comparator<CoinDefinition>() {
-        @Override
-        public int compare(CoinDefinition a, CoinDefinition b) {
-            int setCompare = a.set.compareTo(b.set);
-            if (setCompare != 0) return setCompare;
-            int rarityCompare = a.rarity.compareTo(b.rarity);
-            if (rarityCompare != 0) return rarityCompare;
-            return a.id.compareTo(b.id);
-        }
-    };
 
     public CollectionScreen(CoinClicker game) {
         super(game);
@@ -46,36 +46,50 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
         shapeRenderer = new ShapeRenderer();
         Gdx.input.setInputProcessor(gestureDetector);
         buildRenderList();
-        recalculateMaxScroll();
     }
 
     private void buildRenderList() {
         renderList.clear();
 
-        List<CoinDefinition> pixlCoins = game.coinRegistry.getBySet(CoinDefinition.Set.PIXL);
-        if (!pixlCoins.isEmpty()) {
-            Collections.sort(pixlCoins, coinComparator);
-            renderList.add("Pixl Set");
-            renderList.addAll(pixlCoins);
+        String[] pixlDenoms = {"1c", "2c", "5c", "10c", "25c", "50c", "1", "2"};
+        String[] pixlNames  = {"1c", "2c", "5c", "10c",
+                "25c", "50c", "$1", "$2"};
+        CoinDefinition.Rarity[] rarities = {
+                CoinDefinition.Rarity.A,
+                CoinDefinition.Rarity.B,
+                CoinDefinition.Rarity.RARE,
+                CoinDefinition.Rarity.GOLD
+        };
+
+        renderList.add("Pixl Set");
+        for (int i = 0; i < pixlDenoms.length; i++) {
+            for (CoinDefinition.Rarity rarity : rarities) {
+                String suffix = rarity.name().toLowerCase();
+                String id = "pixl_" + pixlDenoms[i] + "_" + suffix;
+                String name = pixlNames[i] + " (" + rarity.name() + ")";
+                CoinDefinition def = game.coinRegistry.get(id);
+                renderList.add(new CoinSlot(id, name, def));
+            }
         }
 
         List<CoinDefinition> specialCoins = game.coinRegistry.getBySet(CoinDefinition.Set.SPECIAL);
         if (!specialCoins.isEmpty()) {
-            Collections.sort(specialCoins, coinComparator);
             renderList.add("Special");
-            renderList.addAll(specialCoins);
+            for (CoinDefinition def : specialCoins) {
+                renderList.add(new CoinSlot(def.id, def.displayName, def));
+            }
         }
 
         List<CoinDefinition> milestoneCoins = game.coinRegistry.getBySet(CoinDefinition.Set.MILESTONE);
         if (!milestoneCoins.isEmpty()) {
-            Collections.sort(milestoneCoins, coinComparator);
             renderList.add("Milestone");
-            renderList.addAll(milestoneCoins);
+            for (CoinDefinition def : milestoneCoins) {
+                renderList.add(new CoinSlot(def.id, def.displayName, def));
+            }
         }
     }
 
-    private void recalculateMaxScroll() {
-        float screenHeight = game.viewport.getWorldHeight();
+    private void recalculateMaxScroll(float screenHeight) {
         float slotH = COIN_SIZE + PADDING;
         float totalHeight = 0f;
         int col = 0;
@@ -91,7 +105,10 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
             }
         }
 
-        maxScroll = Math.max(0, totalHeight - screenHeight * GRID_START_Y_FACTOR);
+        if (col != 0) totalHeight += slotH;
+        totalHeight += 200f;
+
+        maxScroll = Math.max(0, totalHeight - screenHeight + 300f);
     }
 
     @Override
@@ -99,17 +116,22 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
         float screenWidth = game.viewport.getWorldWidth();
         float screenHeight = game.viewport.getWorldHeight();
 
+        if (!scrollCalculated) {
+            recalculateMaxScroll(screenHeight);
+            scrollCalculated = true;
+        }
+
         float margin = 100f;
-        float titleY  = screenHeight * 0.95f;
-        float backY   = screenHeight * 0.05f;
-        float statsY  = screenHeight * 0.05f;
+        float titleY = screenHeight * 0.95f;
+        float backY = screenHeight * 0.05f;
+        float statsY = screenHeight * 0.05f;
 
         String titleText = "Collection";
-        String backText  = "[ Back ]";
+        String backText = "[ Back ]";
         String statsText = "[ Stats ]";
 
         GlyphLayout titleLayout = new GlyphLayout(titleFont, titleText);
-        GlyphLayout backLayout  = new GlyphLayout(bodyFont, backText);
+        GlyphLayout backLayout = new GlyphLayout(bodyFont, backText);
         GlyphLayout statsLayout = new GlyphLayout(bodyFont, statsText);
 
         ScreenUtils.clear(0, 0, 0, 1);
@@ -117,9 +139,9 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
         handleInput(screenWidth, screenHeight, backY, statsY,
                 backLayout, statsLayout, margin);
 
-        float slotW      = COIN_SIZE + PADDING;
-        float slotH      = COIN_SIZE + PADDING;
-        float gridWidth  = COLS * slotW - PADDING;
+        float slotW = COIN_SIZE + PADDING;
+        float slotH = COIN_SIZE + PADDING;
+        float gridWidth = COLS * slotW - PADDING;
         float gridStartX = screenWidth / 2f - gridWidth / 2f;
         float gridStartY = screenHeight * GRID_START_Y_FACTOR + scrollY;
 
@@ -136,8 +158,8 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
                 if (col != 0) { curY -= slotH; col = 0; }
                 curY -= HEADER_HEIGHT;
             } else {
-                CoinDefinition def = (CoinDefinition) item;
-                boolean isActive = def.id.equals(game.coinInventory.getActiveCoinId());
+                CoinSlot slot = (CoinSlot) item;
+                boolean isActive = slot.expectedId.equals(game.coinInventory.getActiveCoinId());
                 float x = gridStartX + col * slotW;
 
                 if (isActive) {
@@ -165,24 +187,24 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
         for (Object item : renderList) {
             if (item instanceof String) {
                 if (col != 0) { curY -= slotH; col = 0; }
-                // draw header at current position
                 String header = (String) item;
                 bodyFont.draw(batch, header, gridStartX, curY);
-                // then move down past the header
                 curY -= HEADER_HEIGHT;
             } else {
-                CoinDefinition def = (CoinDefinition) item;
+                CoinSlot slot = (CoinSlot) item;
                 float x = gridStartX + col * slotW;
 
                 if (curY + COIN_SIZE > 0 && curY < screenHeight + COIN_SIZE) {
-                    boolean owned = game.coinInventory.owns(def.id);
+                    boolean owned = slot.def != null
+                            && game.coinInventory.owns(slot.expectedId);
+
                     Texture texture = owned
-                            ? game.assetStore.getHeads(def)
+                            ? game.assetStore.getHeads(slot.def)
                             : game.assetStore.lockedCoin;
 
                     batch.draw(texture, x, curY, COIN_SIZE, COIN_SIZE);
 
-                    String label = owned ? def.displayName : "???";
+                    String label = owned ? slot.displayName : "???";
                     GlyphLayout labelLayout = new GlyphLayout(statsFont, label);
                     statsFont.draw(batch, label,
                             x + COIN_SIZE / 2f - labelLayout.width / 2f,
@@ -237,7 +259,6 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
                 return;
             }
 
-            // coin tap — replicate render list walk
             float slotW      = COIN_SIZE + PADDING;
             float slotH      = COIN_SIZE + PADDING;
             float gridWidth  = COLS * slotW - PADDING;
@@ -250,16 +271,15 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
             for (Object item : renderList) {
                 if (item instanceof String) {
                     if (col != 0) { curY -= slotH; col = 0; }
-                    curY -= 60f;
                     curY -= HEADER_HEIGHT;
                 } else {
-                    CoinDefinition def = (CoinDefinition) item;
+                    CoinSlot slot = (CoinSlot) item;
                     float x = gridStartX + col * slotW;
 
                     if (touchX >= x && touchX <= x + COIN_SIZE
                             && touchY >= curY && touchY <= curY + COIN_SIZE) {
-                        if (game.coinInventory.owns(def.id)) {
-                            game.coinInventory.setActiveCoin(def.id);
+                        if (slot.def != null && game.coinInventory.owns(slot.expectedId)) {
+                            game.coinInventory.setActiveCoin(slot.expectedId);
                             game.coinInventory.saveToPrefs(game.prefs);
                         }
                         return;
@@ -281,7 +301,7 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         float worldDeltaY = deltaY * (game.viewport.getWorldHeight() / Gdx.graphics.getHeight());
         scrollY -= worldDeltaY;
-        scrollY = Math.max(-maxScroll, Math.min(0, scrollY));
+        scrollY = Math.max(0, Math.min(maxScroll, scrollY));
         return true;
     }
 
