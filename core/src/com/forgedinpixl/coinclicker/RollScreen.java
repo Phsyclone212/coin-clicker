@@ -56,7 +56,7 @@ public class RollScreen extends BaseScreen {
         GlyphLayout titleLayout = new GlyphLayout(titleFont, titleText);
         GlyphLayout backLayout  = new GlyphLayout(bodyFont, backText);
 
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(0.176f, 0.102f, 0.102f, 1f);
 
         handleInput(screenWidth, screenHeight, backY, backLayout, margin);
 

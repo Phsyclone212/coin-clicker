@@ -134,7 +134,7 @@ public class CollectionScreen extends BaseScreen implements GestureDetector.Gest
         GlyphLayout backLayout = new GlyphLayout(bodyFont, backText);
         GlyphLayout statsLayout = new GlyphLayout(bodyFont, statsText);
 
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(0.176f, 0.102f, 0.102f, 1f);
 
         handleInput(screenWidth, screenHeight, backY, statsY,
                 backLayout, statsLayout, margin);

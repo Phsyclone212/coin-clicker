@@ -79,7 +79,7 @@ public class ShopScreen extends BaseScreen {
                 ? null
                 : new GlyphLayout(statsFont, feedbackText);
 
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(0.176f, 0.102f, 0.102f, 1f);
 
         handleInput(screenWidth, screenHeight, backY, commonBuyY, rareBuyY,
                 donorButtonY, commonBuyLayout, rareBuyLayout,

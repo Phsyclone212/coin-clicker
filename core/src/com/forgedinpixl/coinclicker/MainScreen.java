@@ -50,7 +50,7 @@ public class MainScreen extends BaseScreen {
         GlyphLayout statsLayout         = new GlyphLayout(bodyFont, collectionText);
         GlyphLayout shopLayout          = new GlyphLayout(bodyFont, shopText);
 
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(0.176f, 0.102f, 0.102f, 1f);
 
         handleInput(screenWidth, screenHeight, coinY, coinSize, headerY, bottomRowY,
                 animLayout, statsLayout, shopLayout, margin);

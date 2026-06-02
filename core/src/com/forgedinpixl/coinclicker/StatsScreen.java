@@ -53,7 +53,7 @@ public class StatsScreen extends BaseScreen {
         GlyphLayout resetLayout        = new GlyphLayout(bodyFont, resetText);
         GlyphLayout backLayout         = new GlyphLayout(bodyFont, backText);
 
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(0.176f, 0.102f, 0.102f, 1f);
 
         handleInput(screenWidth, screenHeight, backY, resetY, resetLayout, backLayout);
 
