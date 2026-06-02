@@ -1,173 +1,160 @@
 package com.forgedinpixl.coinclicker;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainScreen extends BaseScreen {
 
-    public MainScreen(CoinClicker game){
+    private Label titleLabel;
+    private Label pointsLabel;
+    private Label resultLabel;
+    private Label streakLabel;
+    private Label multiplierLabel;
+    private TextButton animButton;
+    private TextButton shopButton;
+    private TextButton collectionButton;
+    private TextButton statsButton;
+    private Image coinImage;
+
+    // coin image is drawn manually for animation — kept outside Scene2D
+    private float coinSize = 600f;
+
+    public MainScreen(CoinClicker game) {
         super(game);
+        buildUI();
+    }
+
+    private void buildUI() {
+        // labels
+        titleLabel      = new Label("Coin Clicker", game.skin, "title");
+        pointsLabel     = new Label("Points: 0", game.skin, "default");
+        resultLabel     = new Label("Tap coin to flip", game.skin, "body");
+        streakLabel     = new Label("Current Streak: 0", game.skin, "default");
+        multiplierLabel = new Label("", game.skin, "default");
+
+        // buttons
+        animButton       = new TextButton("Anim: OFF", game.skin);
+        shopButton       = new TextButton("Shop", game.skin);
+        collectionButton = new TextButton("Coinbook", game.skin);
+        statsButton      = new TextButton("Stats", game.skin);
+
+        // button listeners
+        animButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                coinController.setAnimatedMode(!coinController.isAnimatedMode());
+            }
+        });
+
+        shopButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new ShopScreen(game));
+            }
+        });
+
+        collectionButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new CollectionScreen(game));
+            }
+        });
+
+        statsButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new StatsScreen(game));
+            }
+        });
+
+        // coin tap area — invisible button sized to coin
+        TextButton coinButton = new TextButton("", game.skin);
+        coinButton.setSize(coinSize, coinSize);
+        coinButton.setPosition(
+                (1080f - coinSize) / 2f,
+                1920f * 0.68f - coinSize);
+        coinButton.getStyle().up = null;
+        coinButton.getStyle().down = null;
+        coinButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                coinController.requestFlip();
+            }
+        });
+        stage.addActor(coinButton);
+
+        // main layout table
+        Table root = new Table();
+        root.setFillParent(true);
+        root.pad(40f);
+
+        // top row — points left, anim button right
+        Table topRow = new Table();
+        topRow.add(pointsLabel).expandX().left();
+        topRow.add(animButton).right().width(350f).height(120f).pad(10f);
+
+        // bottom row — shop left, stats middle, collection right
+        Table bottomRow = new Table();
+        bottomRow.add(shopButton).expandX().left().width(280f).height(150f).pad(5f);
+        bottomRow.add(statsButton).expandX().center().width(300f).height(150f).pad(15f);
+        bottomRow.add(collectionButton).expandX().right().width(260f).height(150f).pad(10f);
+
+        // assemble root table
+        root.add(titleLabel).colspan(2).center().padBottom(20f).row();
+        root.add(topRow).colspan(2).fillX().padBottom(20f).row();
+
+        // spacer for coin area
+        root.add(new Label("", game.skin)).colspan(2)
+                .height(1920f * 0.55f).row();
+
+        root.add(resultLabel).colspan(2).center().padBottom(10f).row();
+        root.add(streakLabel).colspan(2).center().padBottom(10f).row();
+        root.add(multiplierLabel).colspan(2).center().expandY().top().row();
+        root.add(bottomRow).colspan(2).fillX().bottom().padBottom(10f);
+
+        stage.addActor(root);
     }
 
     @Override
-    public void render(float delta){
-
-        float screenWidth = game.viewport.getWorldWidth();
-        float screenHeight = game.viewport.getWorldHeight();
-
-        float coinSize = 600f;
-        float margin = 80f;
-
-        // anchors
-        float titleY        = screenHeight * 0.95f;
-        float headerY       = titleY - 160f;        // Flip$ and Anim toggle row
-        float coinY         = screenHeight * 0.68f;
-        float subtextY      = coinY - coinSize - 80f;
-        float streakY       = subtextY - 100f;
-        float multiplierY = streakY - 100f;
-        float bottomRowY    = screenHeight * 0.08f; // Shop and Stats row
-
-        // strings
-        String titleText        = "Coin Clicker";
-        String pointsText  = "Points: " + statsTracker.getPoints();
-        String animText         = coinController.isAnimatedMode() ? "[ Anim: ON ]" : "[ Anim: OFF ]";
-        String resultText       = coinController.getCurrentResultText();
-        String currentStreakText = "Current Streak: " + statsTracker.getCurrentStreak();
-        String multiplierText = coinController.isAnimatedMode() ? "x2 Points per flip" : "";
-        String collectionText        = "[ Collection ]";
-        String shopText         = "[ Shop ]";
-
-        // layouts
-        GlyphLayout titleLayout         = new GlyphLayout(titleFont, titleText);
-        GlyphLayout flipDollarsLayout   = new GlyphLayout(statsFont, pointsText);
-        GlyphLayout animLayout          = new GlyphLayout(statsFont, animText);
-        GlyphLayout resultLayout        = new GlyphLayout(bodyFont, resultText);
-        GlyphLayout streakLayout        = new GlyphLayout(statsFont, currentStreakText);
-        GlyphLayout multiplierLayout = new GlyphLayout(statsFont, multiplierText);
-        GlyphLayout statsLayout         = new GlyphLayout(bodyFont, collectionText);
-        GlyphLayout shopLayout          = new GlyphLayout(bodyFont, shopText);
-
+    public void render(float delta) {
         ScreenUtils.clear(0.176f, 0.102f, 0.102f, 1f);
-
-        handleInput(screenWidth, screenHeight, coinY, coinSize, headerY, bottomRowY,
-                animLayout, statsLayout, shopLayout, margin);
 
         coinController.update(delta);
         game.coinUnlockManager.checkMilestoneUnlocks();
 
+        // update labels
+        pointsLabel.setText("Points: " + statsTracker.getPoints());
+        resultLabel.setText(coinController.getCurrentResultText());
+        streakLabel.setText("Current Streak: " + statsTracker.getCurrentStreak());
+        multiplierLabel.setText(coinController.isAnimatedMode() ? "x2 Points per flip" : "");
+        animButton.setText(coinController.isAnimatedMode() ? "Anim: ON" : "Anim: OFF");
+
+        super.render(delta);
+
+        // draw coin manually for animation — Scene2D can't handle x-scale squish
         batch.begin();
+        batch.setProjectionMatrix(stage.getCamera().combined);
 
-        // title — centered
-        titleFont.draw(batch, titleText,
-                screenWidth / 2f - titleLayout.width / 2f, titleY);
-
-        // Flip$ — top left
-        statsFont.draw(batch, pointsText, margin, headerY);
-
-        // Anim toggle — top right
-        statsFont.draw(batch, animText,
-                screenWidth - margin - animLayout.width, headerY);
-
-        // coin
         CoinDefinition activeCoin = game.coinInventory.getActiveCoin();
         Texture coinTexture = coinController.isShowingHeads()
                 ? game.assetStore.getHeads(activeCoin)
                 : game.assetStore.getTails(activeCoin);
 
-        float coinX = screenWidth / 2f - coinSize / 2f;
+        float coinX = (1080f - coinSize) / 2f;
+        float coinY = 1920f * 0.68f - coinSize;
         float xScale = coinController.getCurrentXScale();
         float scaledWidth = coinSize * xScale;
         float offsetX = (coinSize - scaledWidth) / 2f;
 
-        batch.draw(coinTexture, coinX + offsetX, coinY - coinSize, scaledWidth, coinSize);
-
-        // result and streak — centered
-        bodyFont.draw(batch, resultText,
-                screenWidth / 2f - resultLayout.width / 2f, subtextY);
-        statsFont.draw(batch, currentStreakText,
-                screenWidth / 2f - streakLayout.width / 2f, streakY);
-
-        // bonus rate for animation toggled on
-        statsFont.draw(batch, multiplierText,
-                screenWidth / 2f - multiplierLayout.width / 2f, multiplierY);
-
-        // Shop — bottom left (greyed out via naming, dead button)
-        bodyFont.draw(batch, shopText, margin, bottomRowY);
-
-        // Stats — bottom right
-        bodyFont.draw(batch, collectionText,
-                screenWidth - margin - statsLayout.width, bottomRowY);
-
+        batch.draw(coinTexture, coinX + offsetX, coinY, scaledWidth, coinSize);
         batch.end();
-    }
-
-    private void handleInput(float screenWidth, float screenHeight,
-                             float coinY, float coinSize,
-                             float headerY, float bottomRowY,
-                             GlyphLayout animLayout, GlyphLayout statsLayout,
-                             GlyphLayout shopLayout, float margin) {
-
-        if (Gdx.input.justTouched()) {
-
-            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            game.viewport.unproject(touchPos);
-            float touchX = touchPos.x;
-            float touchY = touchPos.y;
-
-            float padding = 30f;
-
-            // coin hitbox
-            float coinX      = screenWidth / 2f - coinSize / 2f;
-            float coinLeft   = coinX;
-            float coinRight  = coinX + coinSize;
-            float coinBottom = coinY - coinSize;
-            float coinTop    = coinY;
-
-            // anim toggle hitbox — top right
-            float animX      = screenWidth - margin - animLayout.width;
-            float animLeft   = animX - padding;
-            float animRight  = animX + animLayout.width + padding;
-            float animBottom = headerY - animLayout.height - padding;
-            float animTop    = headerY + padding;
-
-            // stats hitbox — bottom right
-            float collectionX      = screenWidth - margin - statsLayout.width;
-            float collectionLeft   = collectionX - padding;
-            float collectionRight  = collectionX + statsLayout.width + padding;
-            float collectionBottom = bottomRowY - statsLayout.height - padding;
-            float collectionTop    = bottomRowY + padding;
-
-            // coin tap
-            if (touchX >= coinLeft && touchX <= coinRight
-                    && touchY >= coinBottom && touchY <= coinTop) {
-                coinController.requestFlip();
-            }
-
-            // anim toggle tap
-            if (touchX >= animLeft && touchX <= animRight
-                    && touchY >= animBottom && touchY <= animTop) {
-                coinController.setAnimatedMode(!coinController.isAnimatedMode());
-            }
-
-            // collection tap
-            if (touchX >= collectionLeft && touchX <= collectionRight
-                    && touchY >= collectionBottom && touchY <= collectionTop) {
-                game.setScreen(new CollectionScreen(game));
-            }
-
-            // shop hitbox — bottom left
-            float shopLeft   = margin - padding;
-            float shopRight  = margin + shopLayout.width + padding;
-            float shopBottom = bottomRowY - shopLayout.height - padding;
-            float shopTop    = bottomRowY + padding;
-
-            if (touchX >= shopLeft && touchX <= shopRight
-                    && touchY >= shopBottom && touchY <= shopTop) {
-                game.setScreen(new ShopScreen(game));
-            }
-        }
     }
 }

@@ -151,8 +151,8 @@ public class CoinClicker extends Game {
 		buttonStyle.down     = skin.getDrawable("button-down");
 		buttonStyle.disabled = skin.getDrawable("button-disabled");
 		buttonStyle.font     = bodyFont;
-		buttonStyle.fontColor         = darkColor;
-		buttonStyle.downFontColor     = creamColor;
+		buttonStyle.fontColor         = creamColor;
+		buttonStyle.downFontColor     = darkColor;
 		buttonStyle.disabledFontColor = mauveColor;
 		skin.add("default", buttonStyle, TextButton.TextButtonStyle.class);
 
