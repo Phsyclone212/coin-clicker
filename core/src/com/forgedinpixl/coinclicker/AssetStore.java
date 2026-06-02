@@ -10,6 +10,7 @@ public class AssetStore {
     private final Map<String, Texture> textures = new HashMap<>();
 
     public Texture lockedCoin;
+    public Texture coinHighlight;
 
     public void loadCoins(CoinRegistry registry) {
         for (CoinDefinition def : registry.getAll()) {
@@ -17,6 +18,7 @@ public class AssetStore {
             loadIfAbsent(def.tailsPath);
         }
         lockedCoin = new Texture(Gdx.files.internal("coins/coin_locked.png"));
+        coinHighlight = new Texture(Gdx.files.internal("coins/coin_highlight.png"));
     }
 
     private void loadIfAbsent(String path) {
@@ -42,6 +44,7 @@ public class AssetStore {
             texture.dispose();
         }
         if (lockedCoin != null) lockedCoin.dispose();
+        if (coinHighlight != null) coinHighlight.dispose();
         textures.clear();
     }
 }
