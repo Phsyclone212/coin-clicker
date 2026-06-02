@@ -1,9 +1,11 @@
 package com.forgedinpixl.coinclicker;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import java.util.List;
 
@@ -18,19 +20,54 @@ public class RollScreen extends BaseScreen {
 
     private static final float COIN_SIZE = 200f;
     private static final float PADDING_X = 40f;
-    private static final float PADDING_Y = 80f;
+    private static final float PADDING_Y = 110f;
     private static final int COLS = 2;
+
+    private Label titleLabel;
+    private TextButton actionButton;
 
     public RollScreen(CoinClicker game, List<CoinDefinition> results) {
         super(game);
         this.results = results;
+        buildUI();
+    }
+
+    private void buildUI() {
+        titleLabel   = new Label("Opening...", game.skin, "title");
+        actionButton = new TextButton("Skip", game.skin);
+
+        actionButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (!allRevealed) {
+                    revealedCount = results.size();
+                    allRevealed = true;
+                    autoRevealing = false;
+                } else {
+                    game.setScreen(new ShopScreen(game));
+                }
+            }
+        });
+
+        Table root = new Table();
+        root.setFillParent(true);
+        root.pad(40f);
+        root.top();
+
+        root.add(titleLabel).center().expandX().padBottom(20f).row();
+
+        stage.addActor(root);
+        actionButton.setSize(400f, 130f);
+        actionButton.setPosition(
+                (1080f - 400f) / 2f,  // centered horizontally
+                40f                     // fixed distance from bottom
+        );
+        stage.addActor(actionButton);
     }
 
     @Override
     public void render(float delta) {
-        float screenWidth = game.viewport.getWorldWidth();
-        float screenHeight = game.viewport.getWorldHeight();
-        float margin = 100f;
+        ScreenUtils.clear(0.176f, 0.102f, 0.102f, 1f);
 
         // auto reveal timer
         if (autoRevealing && !allRevealed) {
@@ -46,30 +83,22 @@ public class RollScreen extends BaseScreen {
             }
         }
 
-        float titleY    = screenHeight * 0.95f;
-        float gridStartY = screenHeight * 0.85f;
-        float backY     = screenHeight * 0.05f;
+        // update UI
+        titleLabel.setText(allRevealed ? "Roll Complete!" : "Opening...");
+        actionButton.setText(allRevealed ? "Back to Shop" : "Skip");
 
-        String titleText = allRevealed ? "Roll Complete!" : "Rolling...";
-        String backText  = allRevealed ? "[ Back to Shop ]" : "[ Skip ]";
+        super.render(delta);
 
-        GlyphLayout titleLayout = new GlyphLayout(titleFont, titleText);
-        GlyphLayout backLayout  = new GlyphLayout(bodyFont, backText);
-
-        ScreenUtils.clear(0.176f, 0.102f, 0.102f, 1f);
-
-        handleInput(screenWidth, screenHeight, backY, backLayout, margin);
-
+        // draw coin grid manually
         batch.begin();
+        batch.setProjectionMatrix(stage.getCamera().combined);
 
-        titleFont.draw(batch, titleText,
-                screenWidth / 2f - titleLayout.width / 2f, titleY);
-
-        // coin grid
-        float slotW = COIN_SIZE + PADDING_X;
-        float slotH = COIN_SIZE + PADDING_Y;
-        float gridWidth  = COLS * slotW - PADDING_X;
-        float gridStartX = screenWidth / 2f - gridWidth / 2f;
+        float screenWidth  = 1080f;
+        float gridStartY   = 1920f * 0.90f;
+        float slotW        = COIN_SIZE + PADDING_X;
+        float slotH        = COIN_SIZE + PADDING_Y;
+        float gridWidth    = COLS * slotW - PADDING_X;
+        float gridStartX   = screenWidth / 2f - gridWidth / 2f;
 
         for (int i = 0; i < results.size(); i++) {
             int col = i % COLS;
@@ -84,9 +113,8 @@ public class RollScreen extends BaseScreen {
                 batch.draw(texture, x, y - COIN_SIZE, COIN_SIZE, COIN_SIZE);
 
                 String rarityText = def.rarity.name();
-                GlyphLayout rarityLayout = new GlyphLayout(statsFont, rarityText);
                 statsFont.draw(batch, rarityText,
-                        x + COIN_SIZE / 2f - rarityLayout.width / 2f,
+                        x + COIN_SIZE / 2f - statsFont.getSpaceXadvance() * rarityText.length() / 2f,
                         y - COIN_SIZE - 24f);
             } else {
                 batch.draw(game.assetStore.lockedCoin,
@@ -94,37 +122,6 @@ public class RollScreen extends BaseScreen {
             }
         }
 
-        bodyFont.draw(batch, backText, margin, backY);
-
         batch.end();
-    }
-
-    private void handleInput(float screenWidth, float screenHeight,
-                             float backY, GlyphLayout backLayout, float margin) {
-        if (Gdx.input.justTouched()) {
-            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            game.viewport.unproject(touchPos);
-            float touchX = touchPos.x;
-            float touchY = touchPos.y;
-            float padding = 30f;
-
-            float backLeft   = margin - padding;
-            float backRight  = margin + backLayout.width + padding;
-            float backBottom = backY - backLayout.height - padding;
-            float backTop    = backY + padding;
-
-            if (touchX >= backLeft && touchX <= backRight
-                    && touchY >= backBottom && touchY <= backTop) {
-                if (!allRevealed) {
-                    // skip — reveal all immediately
-                    revealedCount = results.size();
-                    allRevealed = true;
-                    autoRevealing = false;
-                } else {
-                    // done — back to shop
-                    game.setScreen(new ShopScreen(game));
-                }
-            }
-        }
     }
 }
